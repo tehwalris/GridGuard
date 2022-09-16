@@ -2,22 +2,22 @@
   "private": true,
   "workspaces": {
     "packages": [
-      "puzzle-shared",
-      "puzzle-client",
-      "puzzle-server"
+      "power-shared",
+      "power-client",
+      "power-server"
     ],
     "nohoist": [
       "**"
     ]
   },
   "devDependencies": {
-    "concurrently": "^5.3.0",
-    "prettier": "^2.2.1"
+    "concurrently": "^7.4.0",
+    "prettier": "^2.7.1"
   },
   "scripts": {
-    "watch-shared": "cd puzzle-shared && yarn run watch",
-    "watch-server": "cd puzzle-server && yarn run watch",
-    "watch-client": "cd puzzle-client && yarn run watch",
+    "watch-shared": "cd power-shared && yarn run watch",
+    "watch-server": "cd power-server && yarn run watch",
+    "watch-client": "cd power-client && yarn run watch",
     "watch": "concurrently \"npm:watch-*\"",
     "format": "prettier --write .",
     "check-format": "prettier --check ."
