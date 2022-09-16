@@ -15,7 +15,7 @@ import {
   State,
   unreachable,
   lobbyCodeFromUrl,
-} from "puzzle-shared";
+} from "power-shared";
 import WebSocket from "ws";
 
 const LOBBY_TIMEOUT_MS = 1000 * 60 * 5;
@@ -108,7 +108,7 @@ class Lobby {
             sendToSelf({
               type: MessageType.RejectEntryServer,
               entryId: msg.entry.id,
-              error: err.toString(),
+              error: (err as any)?.toString(),
             });
             return;
           }

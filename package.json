@@ -5,9 +5,6 @@
       "power-shared",
       "power-client",
       "power-server"
-    ],
-    "nohoist": [
-      "**"
     ]
   },
   "devDependencies": {
