@@ -2,7 +2,6 @@ import { createStyles, Group, Stack } from "@mantine/core";
 import { State } from "power-shared";
 import React from "react";
 import LineChart from "../components/LineChart";
-import { RunAction } from "../useUnilog";
 
 const useStyles = createStyles((theme, _params, getRef) => ({
   container: {

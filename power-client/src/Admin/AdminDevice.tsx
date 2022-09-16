@@ -1,4 +1,5 @@
 import { Switch } from "@mantine/core";
+import { ActionType } from "power-shared";
 import React from "react";
 import { RunAction } from "../useUnilog";
 
@@ -18,7 +19,15 @@ function AdminDevice({ device, runAction }: Props) {
       {device.key}:
       <Switch
         checked={device.powered}
-        onChange={(event) => console.log(event.currentTarget.checked)}
+        onChange={(event) =>
+          runAction(() => {
+            return {
+              type: ActionType.SetToggle,
+              key: device.key,
+              powered: event.currentTarget.checked,
+            };
+          })
+        }
         onLabel="ON"
         offLabel="OFF"
       />
