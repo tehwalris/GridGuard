@@ -1,6 +1,8 @@
-import { AppShell, Header, Navbar, Text } from "@mantine/core";
+import React from "react";
+import { AppShell, Text, Navbar, Header } from "@mantine/core";
+import AdminHeader from "./AdminHeader";
+import AdminContent from "./AdminContent";
 import { State } from "power-shared";
-import LineChart from "../components/LineChart";
 import { RunAction } from "../useUnilog";
 
 interface Props {
@@ -13,13 +15,13 @@ function Admin({ state }: Props) {
     <AppShell
       padding="md"
       navbar={
-        <Navbar p="md" width={{ sm: 200, lg: 300 }}>
+        <Navbar p="md" width={{ base: 300 }}>
           <Text>Application navbar</Text>
         </Navbar>
       }
       header={
-        <Header height={60} p="xs">
-          <Text>Header</Text>
+        <Header height={120} p={0}>
+          <AdminHeader />
         </Header>
       }
       styles={(theme) => ({
@@ -28,8 +30,7 @@ function Admin({ state }: Props) {
         },
       })}
     >
-      <LineChart />
-      <pre>{JSON.stringify(state)}</pre>
+      <AdminContent /> <pre>{JSON.stringify(state)}</pre>
     </AppShell>
   );
 }
