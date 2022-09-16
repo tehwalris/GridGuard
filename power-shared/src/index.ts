@@ -1,6 +1,5 @@
-export { reducer, initialState } from "./reducer";
-export * from "./util";
-
 export * from "./interfaces/action";
-export * from "./interfaces/state";
 export * from "./interfaces/message";
+export * from "./interfaces/state";
+export { initialState, reducer, tickMillis } from "./reducer";
+export * from "./util";

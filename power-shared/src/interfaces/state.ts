@@ -4,6 +4,7 @@ export interface State {
   users: User[];
   toggles: MachineToggle[];
   simulation: SimulationState;
+  simulationHistory: SimulationState[];
 }
 
 export interface User {
@@ -17,5 +18,6 @@ export interface MachineToggle {
 }
 
 export interface SimulationState {
-  recentPowerConsumption: number[];
+  tick: number;
+  powerConsumption: number;
 }

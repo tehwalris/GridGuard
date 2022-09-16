@@ -1,9 +1,14 @@
-export type Action = AddUserAction | RemoveUserAction | SetToggleAction;
+export type Action =
+  | AddUserAction
+  | RemoveUserAction
+  | SetToggleAction
+  | TickSimulationAction;
 
 export enum ActionType {
   AddUser = "AddUser",
   RemoveUser = "RemoveUser",
   SetToggle = "SetToggle",
+  TickSimulation = "TickSimulation",
 }
 
 export interface AddUserAction {
@@ -20,4 +25,8 @@ export interface SetToggleAction {
   type: ActionType.SetToggle;
   key: string;
   powered: boolean;
+}
+
+export interface TickSimulationAction {
+  type: ActionType.TickSimulation;
 }

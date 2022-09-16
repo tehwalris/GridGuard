@@ -6,10 +6,12 @@ import {
   ClientMessage,
   initialState,
   LogEntry,
+  LogEntryServerMessage,
   MessageType,
   reducer,
   ServerMessage,
   State,
+  tickMillis,
   unreachable,
 } from "power-shared";
 import * as R from "ramda";
@@ -18,7 +20,6 @@ import { v4 as genId } from "uuid";
 import WebSocket from "ws";
 
 const LOBBY_TIMEOUT_MS = 1000 * 60 * 5;
-const LOBBY_CODE_LENGTH = 6;
 
 interface UndoPoint {
   firstEntryId: number;
@@ -35,6 +36,7 @@ class Lobby {
   private undoPoints = new Map<string, UndoPoint>();
   private lastConnectedAt = Date.now();
   private clients = new Set<WebSocket>();
+  private tickHandle: NodeJS.Timer | undefined;
 
   private pushToLog(action: Action, undoKey: string | undefined): LogEntry {
     const nextState = reducer(this.state, action); // test if the reducer throws when the action is applied
@@ -48,6 +50,30 @@ class Lobby {
     }
     this.state = nextState;
     return newEntry;
+  }
+
+  private onTick = () => {
+    const entry = this.pushToLog(
+      { type: ActionType.TickSimulation },
+      undefined,
+    );
+    const msg: LogEntryServerMessage = {
+      type: MessageType.LogEntryServer,
+      entry,
+    };
+    const msgString = JSON.stringify(msg);
+    for (const ws of this.clients) {
+      ws.send(msgString);
+    }
+  };
+
+  startTick() {
+    this.stopTick();
+    this.tickHandle = setInterval(this.onTick, tickMillis);
+  }
+
+  stopTick() {
+    clearInterval(this.tickHandle);
   }
 
   shouldBeDeleted(): boolean {
@@ -196,6 +222,7 @@ const lobbies = new Map<string, Lobby>();
 setInterval(() => {
   for (const [lobbyCode, lobby] of lobbies.entries()) {
     if (lobby.shouldBeDeleted()) {
+      lobby.stopTick();
       lobbies.delete(lobbyCode);
     }
   }
@@ -209,6 +236,7 @@ wss.on("connection", (ws, request) => {
     let lobby = lobbies.get(lobbyCode);
     if (!lobby) {
       lobby = new Lobby();
+      lobby.startTick();
       lobbies.set(lobbyCode, lobby);
     }
 

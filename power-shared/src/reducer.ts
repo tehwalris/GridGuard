@@ -1,8 +1,15 @@
-import { produce } from "immer";
+import { original, produce } from "immer";
 import _ from "lodash";
 import { Action, ActionType } from "./interfaces/action";
 import { State, User } from "./interfaces/state";
 import { unreachable } from "./util";
+
+const historySize = 20;
+export const tickMillis = 500;
+
+function getPowerFromTick(tick: number): number {
+  return 1000 + Math.sin(tick) * 100;
+}
 
 export function makeInitialState(): State {
   return {
@@ -16,8 +23,13 @@ export function makeInitialState(): State {
       "heater",
     ].map((key, i) => ({ key, powered: (i + 1) % 3 !== 0 })),
     simulation: {
-      recentPowerConsumption: _.times(20, (i) => 1000 + Math.sin(i) * 100),
+      tick: historySize,
+      powerConsumption: getPowerFromTick(historySize),
     },
+    simulationHistory: _.times(historySize, (i) => ({
+      tick: i,
+      powerConsumption: getPowerFromTick(i),
+    })),
   };
 }
 
@@ -53,6 +65,17 @@ export const reducer = (_state: State, action: Action): State =>
           }
         }
         throw new Error(`toggle does not exist: ${action.key}`);
+      }
+      case ActionType.TickSimulation: {
+        state.simulationHistory.shift();
+        state.simulationHistory.push(
+          _.cloneDeep(original(state.simulation) ?? state.simulation),
+        );
+        state.simulation.tick++;
+        state.simulation.powerConsumption = getPowerFromTick(
+          state.simulation.tick,
+        );
+        break;
       }
       default: {
         unreachable(action);

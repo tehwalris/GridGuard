@@ -1,10 +1,9 @@
 import { createStyles, Grid } from "@mantine/core";
 import { State } from "power-shared";
-import React from "react";
 import LineChart from "../components/LineChart";
+import { RunAction } from "../useUnilog";
 import AdminDeviceList from "./AdminDeviceList";
 import AdminBox from "./TextBox";
-import { RunAction } from "../useUnilog";
 
 const useStyles = createStyles((theme, _params, getRef) => ({
   container: {
@@ -22,18 +21,19 @@ interface Props {
 function AdminContent({ state, runAction }: Props) {
   const { classes } = useStyles();
 
+  const recentPowerConsumption = state.simulationHistory.map(
+    (h) => h.powerConsumption,
+  );
+
   return (
     <div className={classes.container}>
       <Grid grow gutter="lg">
         <Grid.Col className={classes.border} span={5} p={0}>
-          <LineChart data={state.simulation.recentPowerConsumption} />
+          <LineChart data={recentPowerConsumption} />
           <Grid grow gutter="sm">
             <Grid.Col span={1} p={0}>
               <AdminBox
-                content={
-                  "Current Usage: " +
-                  state.simulation.recentPowerConsumption.slice(-1)[0]
-                }
+                content={"Current Usage: " + state.simulation.powerConsumption}
               />
             </Grid.Col>
             <Grid.Col span={1} p={0}>
