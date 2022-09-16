@@ -1,9 +1,22 @@
-import React from "react";
-import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
+import { BrowserRouter, Link, Route, Routes } from "react-router-dom";
 import Admin from "./Admin/Admin";
 import User from "./User/User";
+import { useUnilog } from "./useUnilog";
+
+const serverOrigin =
+  process.env.NODE_ENV === "development"
+    ? `${window.location.hostname}:8088`
+    : window.location.host;
+const wsServerBaseUrl = `${
+  window.location.protocol === "https:" ? "wss" : "ws"
+}://${serverOrigin}`;
 
 function App() {
+  const wsUrl = new URL("./lobbies/HACK", wsServerBaseUrl).href;
+  const { state, userId, runAction } = useUnilog(wsUrl);
+
+  console.log("DEBUG unilog", state, userId);
+
   return (
     <BrowserRouter>
       <Routes>
