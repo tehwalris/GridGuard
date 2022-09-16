@@ -2,13 +2,17 @@ import { Center, createStyles } from "@mantine/core";
 import React from "react";
 
 const useStyles = createStyles((theme, _params, getRef) => ({
-  container: { height: 200, width: "100%", fontSize: 30 },
+  container: { height: 100, width: "100%", fontSize: 30 },
 }));
 
-function AdminBox() {
+interface Props {
+  content: string;
+}
+
+function AdminBox({ content }: Props) {
   const { classes } = useStyles();
 
-  return <Center className={classes.container}>Label: Number</Center>;
+  return <Center className={classes.container}>{content}</Center>;
 }
 
 export default AdminBox;

@@ -1,9 +1,6 @@
-import { Stack, createStyles } from "@mantine/core";
+import { Switch } from "@mantine/core";
 import React from "react";
-
-const useStyles = createStyles((theme, _params, getRef) => ({
-  container: { height: "100%", width: "100%" },
-}));
+import { RunAction } from "../useUnilog";
 
 export interface Device {
   key: string;
@@ -12,14 +9,19 @@ export interface Device {
 
 interface Props {
   device: Device;
+  runAction: RunAction;
 }
 
-function AdminDevice({ device }: Props) {
-  const { classes } = useStyles();
-
+function AdminDevice({ device, runAction }: Props) {
   return (
     <div>
-      {device.key}: {device.powered ? "on" : "off"}
+      {device.key}:
+      <Switch
+        checked={device.powered}
+        onChange={(event) => console.log(event.currentTarget.checked)}
+        onLabel="ON"
+        offLabel="OFF"
+      />
     </div>
   );
 }

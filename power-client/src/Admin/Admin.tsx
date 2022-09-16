@@ -10,7 +10,7 @@ interface Props {
   runAction: RunAction;
 }
 
-function Admin({ state }: Props) {
+function Admin({ state, runAction }: Props) {
   console.log(JSON.stringify(state));
   return (
     <AppShell
@@ -31,7 +31,7 @@ function Admin({ state }: Props) {
         },
       })}
     >
-      <AdminContent state={state} />
+      <AdminContent state={state} runAction={runAction} />
     </AppShell>
   );
 }

@@ -3,7 +3,8 @@ import { State } from "power-shared";
 import React from "react";
 import LineChart from "../components/LineChart";
 import AdminDeviceList from "./AdminDeviceList";
-import AdminBox from "./AdminBox";
+import AdminBox from "./TextBox";
+import { RunAction } from "../useUnilog";
 
 const useStyles = createStyles((theme, _params, getRef) => ({
   container: {
@@ -15,9 +16,10 @@ const useStyles = createStyles((theme, _params, getRef) => ({
 
 interface Props {
   state: State;
+  runAction: RunAction;
 }
 
-function AdminContent({ state }: Props) {
+function AdminContent({ state, runAction }: Props) {
   const { classes } = useStyles();
 
   return (
@@ -27,15 +29,20 @@ function AdminContent({ state }: Props) {
           <LineChart data={state.simulation.recentPowerConsumption} />
           <Grid grow gutter="sm">
             <Grid.Col span={1} p={0}>
-              <AdminBox />
+              <AdminBox
+                content={
+                  "Current Usage: " +
+                  state.simulation.recentPowerConsumption.slice(-1)[0]
+                }
+              />
             </Grid.Col>
             <Grid.Col span={1} p={0}>
-              <AdminBox />
+              <AdminBox content="URGENT:" />
             </Grid.Col>
           </Grid>
         </Grid.Col>
         <Grid.Col className={classes.border} span={1} p={0}>
-          <AdminDeviceList devices={state.toggles} />
+          <AdminDeviceList devices={state.toggles} runAction={runAction} />
         </Grid.Col>
       </Grid>
     </div>
