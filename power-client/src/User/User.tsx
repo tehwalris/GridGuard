@@ -3,6 +3,7 @@ import { AppShell, Header } from "@mantine/core";
 import { State } from "power-shared";
 import UserHeader from "./UserHeader";
 import UserContent from "./UserContent";
+import { Outlet } from "react-router-dom";
 
 interface Props {
   state: State;

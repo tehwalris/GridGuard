@@ -1,6 +1,9 @@
-import { createStyles, Group, Stack } from "@mantine/core";
+import { createStyles } from "@mantine/core";
 import { State } from "power-shared";
-import LineChart from "../components/LineChart";
+import React from "react";
+import { Outlet, Route, Routes } from "react-router-dom";
+import UserDetails from "./UserDetails";
+import UserHome from "./UserHome";
 
 const useStyles = createStyles((theme, _params, getRef) => ({
   container: {
@@ -22,16 +25,12 @@ function UserContent({ state }: Props) {
   );
 
   return (
-    <div className={classes.container}>
-      <Stack>
-        <LineChart data={recentPowerConsumption} />
-        <div>POWER OUTAGE IMMINENT!</div>
-        <Group grow>
-          <div>A</div>
-          <div>B</div>
-        </Group>
-      </Stack>
-    </div>
+    <>
+      <Routes>
+        <Route path="home" element={<UserHome state={state} />} />
+        <Route path="details" element={<UserDetails state={state} />} />
+      </Routes>
+    </>
   );
 }
 

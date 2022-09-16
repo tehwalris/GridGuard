@@ -18,9 +18,9 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/user" element={<User state={state} />} />
+        <Route path="user/*" element={<User state={state} />} />
         <Route
-          path="/admin"
+          path="admin/*"
           element={<Admin state={state} runAction={runAction} />}
         />
         <Route
