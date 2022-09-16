@@ -20,9 +20,7 @@ interface Props {
 function UserContent({ state }: Props) {
   const { classes } = useStyles();
 
-  const recentPowerConsumption = state.simulationHistory.map(
-    (h) => h.powerConsumption,
-  );
+ 
 
   return (
     <>

@@ -1,5 +1,13 @@
-import { Burger, Center, createStyles, Drawer, Text } from "@mantine/core";
+import {
+  Burger,
+  Center,
+  createStyles,
+  Drawer,
+  Stack,
+  Text,
+} from "@mantine/core";
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 
 const useStyles = createStyles((theme, _params, getRef) => ({
   container: {
@@ -27,7 +35,14 @@ function UserHeader() {
         padding="md"
         size="sm"
       >
-        asdf
+        <Stack>
+          <Link to="home" onClick={() => setOpened(false)}>
+            Home
+          </Link>
+          <Link to="details" onClick={() => setOpened(false)}>
+            Details
+          </Link>
+        </Stack>
       </Drawer>
     </div>
   );
