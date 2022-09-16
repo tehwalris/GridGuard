@@ -1,12 +1,12 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`reducer StartGameAction 1`] = `
-Object {
+{
   "distributor": 2,
   "phase": "Distributing",
   "pieceStartTime": 1614527659000,
-  "toDistribute": Array [
-    Array [
+  "toDistribute": [
+    [
       34,
       90,
       66,
@@ -15,7 +15,7 @@ Object {
       39,
       55,
     ],
-    Array [
+    [
       78,
       87,
       76,
@@ -24,7 +24,7 @@ Object {
       53,
       2,
     ],
-    Array [
+    [
       30,
       15,
       58,
@@ -33,7 +33,7 @@ Object {
       45,
       83,
     ],
-    Array [
+    [
       79,
       54,
       94,
@@ -48,9 +48,9 @@ Object {
 `;
 
 exports[`reducer StartGameAction 2`] = `
-Array [
-  Array [
-    Array [
+[
+  [
+    [
       48,
       47,
       16,
@@ -62,7 +62,7 @@ Array [
       46,
       18,
     ],
-    Array [
+    [
       43,
       33,
       17,
@@ -74,7 +74,7 @@ Array [
       44,
       29,
     ],
-    Array [
+    [
       31,
       null,
       null,
@@ -86,7 +86,7 @@ Array [
       null,
       null,
     ],
-    Array [
+    [
       null,
       null,
       null,
@@ -98,7 +98,7 @@ Array [
       null,
       null,
     ],
-    Array [
+    [
       null,
       null,
       null,
@@ -111,8 +111,8 @@ Array [
       null,
     ],
   ],
-  Array [
-    Array [
+  [
+    [
       49,
       35,
       38,
@@ -124,7 +124,7 @@ Array [
       21,
       41,
     ],
-    Array [
+    [
       51,
       9,
       27,
@@ -136,7 +136,7 @@ Array [
       7,
       13,
     ],
-    Array [
+    [
       11,
       null,
       null,
@@ -148,7 +148,7 @@ Array [
       null,
       null,
     ],
-    Array [
+    [
       null,
       null,
       null,
@@ -160,7 +160,7 @@ Array [
       null,
       null,
     ],
-    Array [
+    [
       null,
       null,
       null,
@@ -173,8 +173,8 @@ Array [
       null,
     ],
   ],
-  Array [
-    Array [
+  [
+    [
       56,
       103,
       99,
@@ -186,7 +186,7 @@ Array [
       62,
       84,
     ],
-    Array [
+    [
       71,
       75,
       74,
@@ -198,7 +198,7 @@ Array [
       73,
       85,
     ],
-    Array [
+    [
       100,
       null,
       null,
@@ -210,7 +210,7 @@ Array [
       null,
       null,
     ],
-    Array [
+    [
       null,
       null,
       null,
@@ -222,7 +222,7 @@ Array [
       null,
       null,
     ],
-    Array [
+    [
       null,
       null,
       null,
@@ -235,8 +235,8 @@ Array [
       null,
     ],
   ],
-  Array [
-    Array [
+  [
+    [
       65,
       68,
       81,
@@ -248,7 +248,7 @@ Array [
       82,
       106,
     ],
-    Array [
+    [
       97,
       109,
       63,
@@ -260,7 +260,7 @@ Array [
       64,
       110,
     ],
-    Array [
+    [
       69,
       null,
       null,
@@ -272,7 +272,7 @@ Array [
       null,
       null,
     ],
-    Array [
+    [
       null,
       null,
       null,
@@ -284,7 +284,7 @@ Array [
       null,
       null,
     ],
-    Array [
+    [
       null,
       null,
       null,

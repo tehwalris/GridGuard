@@ -1,3 +1,6 @@
 module.exports = {
-  rootDir: "src",
+  "transform": {
+    "^.+\\.tsx?$": "babel-jest"
+  },
+  "modulePathIgnorePatterns": ["<rootDir>/dist/"],
 };
