@@ -8,14 +8,11 @@ import {
 
 import { Text } from "@mantine/core";
 
-const data = [
-  { x: 1, y: 2 },
-  { x: 2, y: 3 },
-  { x: 3, y: 5 },
-  { x: 4, y: 4 },
-  { x: 5, y: 7 },
-];
-function LineChart() {
+interface Props {
+  data: number[];
+}
+
+function LineChart({ data }: Props) {
   return (
     <div style={{ border: "1px solid black" }}>
       <Text p="lg" size={30}>

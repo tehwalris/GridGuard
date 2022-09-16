@@ -5,10 +5,23 @@ const useStyles = createStyles((theme, _params, getRef) => ({
   container: { height: "100%", width: "100%" },
 }));
 
-function AdminDevice() {
+export interface Device {
+  key: string;
+  powered: boolean;
+}
+
+interface Props {
+  device: Device;
+}
+
+function AdminDevice({ device }: Props) {
   const { classes } = useStyles();
 
-  return <div>Device X</div>;
+  return (
+    <div>
+      {device.key}: {device.powered ? "on" : "off"}
+    </div>
+  );
 }
 
 export default AdminDevice;

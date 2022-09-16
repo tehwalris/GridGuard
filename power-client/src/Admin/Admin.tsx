@@ -11,6 +11,7 @@ interface Props {
 }
 
 function Admin({ state }: Props) {
+  console.log(JSON.stringify(state));
   return (
     <AppShell
       padding="md"
@@ -30,7 +31,7 @@ function Admin({ state }: Props) {
         },
       })}
     >
-      <AdminContent /> <pre>{JSON.stringify(state)}</pre>
+      <AdminContent state={state} />
     </AppShell>
   );
 }
