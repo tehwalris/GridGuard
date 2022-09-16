@@ -9,7 +9,8 @@
   },
   "devDependencies": {
     "concurrently": "^7.4.0",
-    "prettier": "^2.7.1"
+    "prettier": "^2.7.1",
+    "prettier-plugin-organize-imports": "^3.1.1"
   },
   "scripts": {
     "watch-shared": "cd power-shared && yarn run watch",

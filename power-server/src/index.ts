@@ -1,8 +1,5 @@
 import cors from "cors";
-import timesyncServer from "timesync/server";
 import express from "express";
-import * as R from "ramda";
-import { v4 as genId } from "uuid";
 import {
   Action,
   ActionType,
@@ -14,8 +11,10 @@ import {
   ServerMessage,
   State,
   unreachable,
-  lobbyCodeFromUrl,
 } from "power-shared";
+import * as R from "ramda";
+import timesyncServer from "timesync/server";
+import { v4 as genId } from "uuid";
 import WebSocket from "ws";
 
 const LOBBY_TIMEOUT_MS = 1000 * 60 * 5;
@@ -206,7 +205,7 @@ wss.on("connection", (ws, request) => {
   try {
     console.log("ws connect", request.url);
 
-    const lobbyCode = lobbyCodeFromUrl(request.url!);
+    const lobbyCode = "HACK";
     let lobby = lobbies.get(lobbyCode);
     if (!lobby) {
       lobby = new Lobby();
