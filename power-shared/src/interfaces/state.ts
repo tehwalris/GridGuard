@@ -2,17 +2,17 @@ export type DateNumber = number; // milliseconds, to pass to new Date(...)
 
 export interface State {
   users: User[];
-  toggles: MachineToggle[];
+  toggles: DeviceClassToggle[];
   simulation: SimulationState;
   simulationHistory: SimulationState[];
 }
 
 export interface User {
   id: string;
-  player?: number | null;
+  devices: Device[];
 }
 
-export interface MachineToggle {
+export interface DeviceClassToggle {
   key: string;
   powered: boolean;
 }
@@ -20,4 +20,9 @@ export interface MachineToggle {
 export interface SimulationState {
   tick: number;
   powerConsumption: number;
+}
+
+export interface Device {
+  id: string;
+  deviceClassKey: string;
 }

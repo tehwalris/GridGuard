@@ -1,8 +1,8 @@
 import {
   Action,
   ClientMessage,
-  initialState,
   LogEntry,
+  makeInitialState,
   MessageType,
   reducer,
   ServerMessage,
@@ -10,7 +10,7 @@ import {
   unreachable,
 } from "power-shared";
 import * as R from "ramda";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { unstable_batchedUpdates } from "react-dom";
 import { v4 as genId } from "uuid";
 import { useWebSocket } from "./use-web-socket";
@@ -70,6 +70,8 @@ function sendToServer(ws: WebSocket, msg: ClientMessage) {
 }
 
 export function useUnilog(wsServerURL: string) {
+  const initialState = useMemo(() => makeInitialState(), []);
+
   const [remoteLog, setRemoteLog] = useState<LogEntry[]>([]);
   const [localLog, setLocalLog] = useState<LogEntry[]>([]);
   const removedLocalEntryIds = useRef(new Set<number>());

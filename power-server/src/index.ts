@@ -4,9 +4,9 @@ import {
   Action,
   ActionType,
   ClientMessage,
-  initialState,
   LogEntry,
   LogEntryServerMessage,
+  makeInitialState,
   MessageType,
   reducer,
   ServerMessage,
@@ -31,7 +31,7 @@ app.use(cors());
 
 class Lobby {
   private log: LogEntry[] = [];
-  private state: State = initialState;
+  private state: State = makeInitialState();
   private undoneUndoKeys = new Set<string>();
   private undoPoints = new Map<string, UndoPoint>();
   private lastConnectedAt = Date.now();

@@ -33,7 +33,16 @@ export function makeInitialState(): State {
   };
 }
 
-export const initialState: State = makeInitialState();
+function makeInitialUser(id: string): User {
+  return {
+    id,
+    devices: [
+      { id: `dishwasher-${id}-0`, deviceClassKey: "dishwasher" },
+      { id: `fridge-${id}-0`, deviceClassKey: "fridge" },
+      { id: `oven-${id}-0`, deviceClassKey: "oven" },
+    ],
+  };
+}
 
 function requireUser(state: State, action: { userId: string }): User {
   const user = state.users.find((u) => u.id === action.userId);
@@ -50,7 +59,7 @@ export const reducer = (_state: State, action: Action): State =>
         if (state.users.find((u) => u.id === action.userId)) {
           throw new Error(`user already exists: ${action.userId}`);
         }
-        state.users.push({ id: action.userId });
+        state.users.push(makeInitialUser(action.userId));
         break;
       }
       case ActionType.RemoveUser: {
