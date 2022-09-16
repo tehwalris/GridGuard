@@ -46,4 +46,38 @@ describe("reducer", () => {
       ),
     );
   });
+
+  describe("SetToggle", () => {
+    test(
+      "set existing toggle",
+      makeReducerTest(
+        (state) => {
+          state.toggles[2].powered = false;
+        },
+        {
+          type: ActionType.SetToggle,
+          key: "microwave",
+          powered: true,
+        },
+        (state) => {
+          state.toggles[2].powered = true;
+        },
+      ),
+    );
+
+    test(
+      "setting missing toggle fails",
+      makeReducerErrorTest(
+        (state) => {
+          state.toggles[2].powered = false;
+        },
+        {
+          type: ActionType.SetToggle,
+          key: "laser-cannon",
+          powered: true,
+        },
+        /toggle does not exist/,
+      ),
+    );
+  });
 });

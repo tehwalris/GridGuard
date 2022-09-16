@@ -45,6 +45,15 @@ export const reducer = (_state: State, action: Action): State =>
         state.users = state.users.filter((u) => u.id !== action.userId);
         break;
       }
+      case ActionType.SetToggle: {
+        for (const toggle of state.toggles) {
+          if (toggle.key === action.key) {
+            toggle.powered = action.powered;
+            return;
+          }
+        }
+        throw new Error(`toggle does not exist: ${action.key}`);
+      }
       default: {
         unreachable(action);
       }
