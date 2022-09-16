@@ -1,8 +1,14 @@
-import React from "react";
-import { AppShell, Text, Navbar, Header } from "@mantine/core";
+import { AppShell, Header, Navbar, Text } from "@mantine/core";
+import { State } from "power-shared";
 import LineChart from "../components/LineChart";
+import { RunAction } from "../useUnilog";
 
-function Admin() {
+interface Props {
+  state: State;
+  runAction: RunAction;
+}
+
+function Admin({ state }: Props) {
   return (
     <AppShell
       padding="md"
@@ -23,6 +29,7 @@ function Admin() {
       })}
     >
       <LineChart />
+      <pre>{JSON.stringify(state)}</pre>
     </AppShell>
   );
 }

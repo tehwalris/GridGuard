@@ -13,15 +13,16 @@ const wsServerBaseUrl = `${
 
 function App() {
   const wsUrl = new URL("./lobbies/HACK", wsServerBaseUrl).href;
-  const { state, userId, runAction } = useUnilog(wsUrl);
-
-  console.log("DEBUG unilog", state, userId);
+  const { state, runAction } = useUnilog(wsUrl);
 
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/user" element={<User />} />
-        <Route path="/admin" element={<Admin />} />
+        <Route
+          path="/admin"
+          element={<Admin state={state} runAction={runAction} />}
+        />
         <Route
           path="/"
           element={

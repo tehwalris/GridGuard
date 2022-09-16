@@ -1,10 +1,24 @@
 import { produce } from "immer";
+import _ from "lodash";
 import { Action, ActionType } from "./interfaces/action";
 import { State, User } from "./interfaces/state";
 import { unreachable } from "./util";
 
 export function makeInitialState(): State {
-  return { users: [] };
+  return {
+    users: [],
+    toggles: [
+      "dishwasher",
+      "fridge",
+      "microwave",
+      "oven",
+      "light",
+      "heater",
+    ].map((key, i) => ({ key, powered: (i + 1) % 3 !== 0 })),
+    simulation: {
+      recentPowerConsumption: _.times(20, (i) => 1000 + Math.sin(i) * 100),
+    },
+  };
 }
 
 export const initialState: State = makeInitialState();
