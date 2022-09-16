@@ -1,6 +1,5 @@
 import { createStyles, Group, Stack } from "@mantine/core";
 import { State } from "power-shared";
-import React from "react";
 import LineChart from "../components/LineChart";
 
 const useStyles = createStyles((theme, _params, getRef) => ({
@@ -18,10 +17,14 @@ interface Props {
 function UserContent({ state }: Props) {
   const { classes } = useStyles();
 
+  const recentPowerConsumption = state.simulationHistory.map(
+    (h) => h.powerConsumption,
+  );
+
   return (
     <div className={classes.container}>
       <Stack>
-        <LineChart data={state.simulation.recentPowerConsumption} />
+        <LineChart data={recentPowerConsumption} />
         <div>POWER OUTAGE IMMINENT!</div>
         <Group grow>
           <div>A</div>

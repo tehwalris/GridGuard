@@ -1,5 +1,4 @@
-import { Stack, createStyles } from "@mantine/core";
-import React from "react";
+import { createStyles, Stack } from "@mantine/core";
 import { RunAction } from "../useUnilog";
 import AdminDevice, { Device } from "./AdminDevice";
 
@@ -19,7 +18,7 @@ function AdminDeviceList({ devices, runAction }: Props) {
     <Stack p="lg" className={classes.container}>
       Devices
       {devices.map((device) => (
-        <AdminDevice device={device} runAction={runAction} />
+        <AdminDevice key={device.key} device={device} runAction={runAction} />
       ))}
     </Stack>
   );

@@ -1,9 +1,8 @@
-import React from "react";
-import { AppShell, Text, Navbar, Header } from "@mantine/core";
-import AdminHeader from "./AdminHeader";
-import AdminContent from "./AdminContent";
+import { AppShell, Header, Navbar, Text } from "@mantine/core";
 import { State } from "power-shared";
 import { RunAction } from "../useUnilog";
+import AdminContent from "./AdminContent";
+import AdminHeader from "./AdminHeader";
 
 interface Props {
   state: State;
@@ -11,7 +10,6 @@ interface Props {
 }
 
 function Admin({ state, runAction }: Props) {
-  console.log(JSON.stringify(state));
   return (
     <AppShell
       padding="md"

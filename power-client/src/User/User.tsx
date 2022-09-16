@@ -1,16 +1,13 @@
-import React from "react";
 import { AppShell, Header } from "@mantine/core";
 import { State } from "power-shared";
-import UserHeader from "./UserHeader";
 import UserContent from "./UserContent";
-import { Outlet } from "react-router-dom";
+import UserHeader from "./UserHeader";
 
 interface Props {
   state: State;
 }
 
 function User({ state }: Props) {
-  console.log(JSON.stringify(state));
   return (
     <AppShell
       padding="md"
