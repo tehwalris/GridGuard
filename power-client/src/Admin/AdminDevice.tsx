@@ -1,36 +1,23 @@
 import { createStyles, Group, Switch } from "@mantine/core";
-import { ActionType } from "power-shared";
-import { RunAction } from "../useUnilog";
+import { DeviceClassToggle } from "power-shared";
 
 const useStyles = createStyles((theme, _params, getRef) => ({
   container: { height: "100%", width: "100%" },
 }));
-export interface Device {
-  key: string;
-  powered: boolean;
-}
 
 interface Props {
-  device: Device;
-  runAction: RunAction;
+  device: DeviceClassToggle;
+  onPoweredChange: (powered: boolean) => void;
 }
 
-function AdminDevice({ device, runAction }: Props) {
+function AdminDevice({ device, onPoweredChange }: Props) {
   const { classes } = useStyles();
   return (
     <Group className={classes.container} position="apart">
       {device.key}:
       <Switch
         checked={device.powered}
-        onChange={(event) =>
-          runAction(() => {
-            return {
-              type: ActionType.SetToggle,
-              key: device.key,
-              powered: event.currentTarget.checked,
-            };
-          })
-        }
+        onChange={(event) => onPoweredChange(event.currentTarget.checked)}
         onLabel="ON"
         offLabel="OFF"
       />

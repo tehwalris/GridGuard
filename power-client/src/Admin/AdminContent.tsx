@@ -46,7 +46,7 @@ function AdminContent({ state, runAction }: Props) {
           </Grid>
         </Grid.Col>
         <Grid.Col span={1} p={0}>
-          <AdminDeviceList devices={state.toggles} runAction={runAction} />
+          <AdminDeviceList toggles={state.toggles} runAction={runAction} />
         </Grid.Col>
       </Grid>
     </Box>
