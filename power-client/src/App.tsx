@@ -36,7 +36,10 @@ function App() {
             path="user/*"
             element={<User state={state} userId={userId!} />}
           />
-          <Route path="visualization/*" element={<Visualization />} />
+          <Route
+            path="visualization/*"
+            element={<Visualization state={state} />}
+          />
           <Route
             path="event/*"
             element={<Event runAction={runAction} state={state} />}

@@ -1,4 +1,5 @@
 import { createStyles } from "@mantine/core";
+import { State } from "power-shared";
 import useWindowDimensions from "./useWindowDimension";
 
 const useStyles = createStyles((theme, _params, getRef) => ({
@@ -14,16 +15,6 @@ const useStyles = createStyles((theme, _params, getRef) => ({
   },
 }));
 
-const types = ["oven", "heater", "dishwasher", "light", "microwave", "fridge"];
-const devices: { type: string; coords: any; onOff: boolean }[] = [];
-for (let i = 0; i < 80; i++) {
-  devices.push({
-    type: types[Math.floor(Math.random() * types.length)],
-    coords: [],
-    onOff: Math.random() > 0.5,
-  });
-}
-
 function gamma(d: number) {
   let x = 1.0;
   for (let i = 0; i < 20; i++)
@@ -31,30 +22,45 @@ function gamma(d: number) {
   return x;
 }
 
-const d = 2;
-const n = devices.length;
-
-const g = gamma(d);
+const g = gamma(2);
 const alpha = [Math.pow(1 / g, 1) % 1, Math.pow(1 / g, 2) % 1];
-for (let i = 0; i < n; i++) {
-  devices[i].coords = alpha.map((e) => (0.5 + e * (i + 1)) % 1);
-}
 
-function Visualization() {
+function Visualization({ state }: { state: State }) {
   const { classes } = useStyles();
   const { height, width } = useWindowDimensions();
 
+  const types = [
+    "oven",
+    "heater",
+    "dishwasher",
+    "light",
+    "microwave",
+    "fridge",
+  ];
+  const devices = state.devices.map((device, i) => {
+    return { ...device, coords: alpha.map((e) => (0.5 + e * (i + 1)) % 1) };
+  });
+  const n = devices.length;
+
+  for (let i = 0; i < n; i++) {
+    devices[i].coords = alpha.map((e) => (0.5 + e * (i + 1)) % 1);
+  }
   return (
     <div className={classes.container}>
       {devices.map((device) => (
         <img
           height={40}
-          src={"/" + device.type + (device.onOff ? "" : "Off") + ".svg"}
+          src={
+            "/" +
+            device.deviceClassKey +
+            (device.powerConsumption !== 0 ? "" : "Off") +
+            ".svg"
+          }
           alt=""
           style={{
             position: "absolute",
-            top: device.coords[0] * (height - 240),
-            left: device.coords[1] * (width - 240),
+            top: device.coords![0] * (height - 240),
+            left: device.coords![1] * (width - 240),
           }}
         />
       ))}
