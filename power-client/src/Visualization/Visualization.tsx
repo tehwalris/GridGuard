@@ -37,7 +37,7 @@ function Visualization({ state }: { state: State }) {
     "microwave",
     "fridge",
   ];
-  const devices = state.devices.map((device, i) => {
+  const devices = state.devices.slice(0, 150).map((device, i) => {
     return { ...device, coords: alpha.map((e) => (0.5 + e * (i + 1)) % 1) };
   });
   const n = devices.length;
@@ -49,6 +49,7 @@ function Visualization({ state }: { state: State }) {
     <div className={classes.container}>
       {devices.map((device) => (
         <img
+          key={device.id}
           height={40}
           src={
             "/" +
