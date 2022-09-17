@@ -23,8 +23,8 @@ const useStyles = createStyles((theme, _params, getRef) => ({
     ":after": {
       content: "''",
       background: theme.colors.contrast2[0],
-      width: 100,
-      height: 4,
+      width: 260,
+      height: 2,
       display: "block",
     },
   },
@@ -39,7 +39,9 @@ function AdminNav() {
       <div className={classes.addSeparator}>
         <AdminNavElement to="" label="DASHBOARD" active={true} />
       </div>
-      <AdminNavElement to="" label="SMTH" active={false} />
+      <div className={classes.addSeparator}>
+        <AdminNavElement to="" label="SMTH" active={false} />
+      </div>
     </Stack>
   );
 }

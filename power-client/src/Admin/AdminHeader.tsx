@@ -30,7 +30,7 @@ function AdminHeader() {
     <div className={classes.container}>
       <Center className={classes.logo}>Logo</Center>
       <Center inline className={classes.title}>
-        <Box p="lg">OPERATION Needlepoint</Box>
+        <Box p="lg">GRIDGUARD</Box>
       </Center>
     </div>
   );

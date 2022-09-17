@@ -1,11 +1,6 @@
 import { createStyles, Text } from "@mantine/core";
 import _ from "lodash";
-import {
-  VictoryAxis,
-  VictoryChart,
-  VictoryLine,
-  VictoryScatter,
-} from "victory";
+import { VictoryAxis, VictoryChart, VictoryLine } from "victory";
 import { colors } from "../colors";
 
 interface Props {
@@ -21,8 +16,27 @@ const useStyles = createStyles((theme, _params, getRef) => ({
   },
 }));
 
+function CustomClip({ ...props }) {
+  return (
+    <defs key={"clips"}>
+      <clipPath id="clip-path-1">
+        <rect x={"0"} y={0} width={"100%"} height={props.scale.y(0.99)} />
+      </clipPath>
+      <clipPath id={"clip-path-2"}>
+        <rect
+          x={"0"}
+          y={props.scale.y(1.01)}
+          width={"100%"}
+          height={props.scale.y(0.99) - props.scale.y(1.01)}
+        />
+      </clipPath>
+    </defs>
+  );
+}
+
 function LineChart({ data, title }: Props) {
   const { classes } = useStyles();
+
   return (
     <div>
       <Text className={classes.title} p="sm" size={30}>
@@ -49,13 +63,39 @@ function LineChart({ data, title }: Props) {
               : undefined
           }
         />
-
-        <VictoryLine data={data} />
-        <VictoryScatter
-          size={5}
-          style={{ data: { fill: colors.red![0] } }}
+        <VictoryLine
+          interpolation="basis"
+          style={{
+            data: {
+              stroke: colors.red![0],
+              strokeWidth: 4,
+            },
+          }}
           data={data}
         />
+        <VictoryLine
+          interpolation="basis"
+          style={{
+            data: {
+              stroke: colors.green![0],
+              strokeWidth: 4,
+
+              clipPath: "url(#clip-path-2)",
+            },
+          }}
+          data={data}
+        />
+
+        <CustomClip />
+        {/*<VictoryScatter
+          size={5}
+          style={{
+            data: {
+              fill: ({ datum }) => datum.fill,
+            },
+          }}
+          data={coloredData}
+        />*/}
       </VictoryChart>
     </div>
   );

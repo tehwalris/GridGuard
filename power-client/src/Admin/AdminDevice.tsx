@@ -16,8 +16,8 @@ function AdminDevice({ device, onPoweredChange }: Props) {
     <Group className={classes.container} position="apart">
       {device.key}:
       <Switch
-        checked={device.powered}
-        onChange={(event) => onPoweredChange(event.currentTarget.checked)}
+        checked={!device.powered}
+        onChange={(event) => onPoweredChange(!event.currentTarget.checked)}
         onLabel="ON"
         offLabel="OFF"
       />

@@ -5,14 +5,15 @@ import UserHeader from "./UserHeader";
 
 interface Props {
   state: State;
+  userId: string;
 }
 
-function User({ state }: Props) {
+function User({ state, userId }: Props) {
   return (
     <AppShell
       padding={0}
       header={
-        <Header height={80}>
+        <Header withBorder={false} height={80}>
           <UserHeader />
         </Header>
       }
@@ -22,7 +23,7 @@ function User({ state }: Props) {
         },
       })}
     >
-      <UserContent state={state} />
+      <UserContent state={state} userId={userId} />
     </AppShell>
   );
 }

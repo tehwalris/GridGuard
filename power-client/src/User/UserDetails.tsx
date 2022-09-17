@@ -1,6 +1,6 @@
 import { Accordion, ActionIcon, createStyles, Group } from "@mantine/core";
 import { IconInfoCircle } from "@tabler/icons";
-import { State } from "power-shared";
+import { selectDeviceSimulationState, selectUser, State } from "power-shared";
 
 const useStyles = createStyles((theme, _params, getRef) => ({
   container: {
@@ -14,44 +14,36 @@ const useStyles = createStyles((theme, _params, getRef) => ({
 
 interface Props {
   state: State;
+  userId: string;
 }
 
-function UserContent({ state }: Props) {
+function UserContent({ state, userId }: Props) {
   const { classes } = useStyles();
-
+  const user = selectUser(state, userId);
   return (
     <div className={classes.container}>
       <Accordion>
-        <Accordion.Item value="customization">
-          <Accordion.Control disabled>Dishwasher</Accordion.Control>
-          <Accordion.Panel>
-            Colors, fonts, shadows and many other parts are customizable to fit
-            your design needs
-          </Accordion.Panel>
-        </Accordion.Item>
-
-        <Accordion.Item value="flexibility">
-          <Accordion.Control className={classes.warning}>
-            <Group position="apart" className={classes.fullWidth}>
-              Fridge{" "}
-              <ActionIcon color="orange">
-                <IconInfoCircle />
-              </ActionIcon>
-            </Group>
-          </Accordion.Control>
-          <Accordion.Panel>
-            Configure components appearance and behavior with vast amount of
-            settings or overwrite any part of component styles
-          </Accordion.Panel>
-        </Accordion.Item>
-
-        <Accordion.Item value="focus-ring">
-          <Accordion.Control disabled>Oven</Accordion.Control>
-          <Accordion.Panel>
-            With new :focus-visible pseudo-class focus ring appears only when
-            user navigates with keyboard
-          </Accordion.Panel>
-        </Accordion.Item>
+        {user?.devices.map((device) => {
+          const deviceState = selectDeviceSimulationState(state, device.id);
+          return (
+            <Accordion.Item value={device.id}>
+              <Accordion.Control>
+                <Group position="apart" className={classes.fullWidth}>
+                  {device.deviceClassKey}
+                  {!deviceState?.powered && (
+                    <ActionIcon color="orange">
+                      <IconInfoCircle />
+                    </ActionIcon>
+                  )}
+                </Group>
+              </Accordion.Control>
+              <Accordion.Panel>
+                Colors, fonts, shadows and many other parts are customizable to
+                fit your design needs
+              </Accordion.Panel>
+            </Accordion.Item>
+          );
+        })}
       </Accordion>
     </div>
   );

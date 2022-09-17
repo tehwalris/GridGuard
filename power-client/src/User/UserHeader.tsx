@@ -35,7 +35,7 @@ function UserHeader() {
         color={colors.contrast1![0]}
       />
       <Center p="md">
-        <Text size={25}>Title</Text>
+        <Text size={25}>GRIDGUARD</Text>
       </Center>
       <Drawer
         opened={opened}

@@ -15,7 +15,7 @@ const wsServerBaseUrl = `${
 
 function App() {
   const wsUrl = new URL("./lobbies/HACK", wsServerBaseUrl).href;
-  const { state, runAction } = useUnilog(wsUrl);
+  const { state, runAction, userId } = useUnilog(wsUrl);
 
   return (
     <MantineProvider
@@ -26,7 +26,10 @@ function App() {
     >
       <BrowserRouter>
         <Routes>
-          <Route path="user/*" element={<User state={state} />} />
+          <Route
+            path="user/*"
+            element={<User state={state} userId={userId!} />}
+          />
           <Route
             path="admin/*"
             element={<Admin state={state} runAction={runAction} />}
