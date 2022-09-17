@@ -14,8 +14,8 @@ function Event({ runAction }: Props) {
 
   return (
     <Center className={classes.container}>
-      <Stack spacing={50}>
-        <img src={"/fridge.svg"} alt="" height={250} />
+      <Stack spacing={0} align="center">
+        <img src={"/Powerplant.svg"} alt="" height={450} />
         <Group>
           <Button
             onClick={() =>
