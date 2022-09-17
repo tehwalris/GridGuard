@@ -107,6 +107,7 @@ describe("reducer", () => {
         () => {},
         {
           type: ActionType.TickSimulation,
+          devices: [],
         },
         (outputState, inputState) => {
           expect(outputState.simulation.tick).toBe(

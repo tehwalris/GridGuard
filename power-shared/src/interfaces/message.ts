@@ -82,6 +82,7 @@ export type DeviceClientMessage =
 
 export interface CreateDeviceClientMessage {
   type: MessageType.CreateDeviceClient;
+  deviceId: string;
   deviceClassKey: string;
 }
 

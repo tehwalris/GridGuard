@@ -4,6 +4,8 @@ import {
   Action,
   ActionType,
   ClientMessage,
+  createVirtualDevices,
+  DeviceServer,
   LogEntry,
   LogEntryServerMessage,
   makeInitialState,
@@ -37,6 +39,7 @@ class Lobby {
   private lastConnectedAt = Date.now();
   private clients = new Set<WebSocket>();
   private tickHandle: NodeJS.Timer | undefined;
+  private deviceServer = new DeviceServer();
 
   private pushToLog(action: Action, undoKey: string | undefined): LogEntry {
     const nextState = reducer(this.state, action); // test if the reducer throws when the action is applied
@@ -54,7 +57,10 @@ class Lobby {
 
   private onTick = () => {
     const entry = this.pushToLog(
-      { type: ActionType.TickSimulation },
+      {
+        type: ActionType.TickSimulation,
+        devices: this.deviceServer.getDevices(),
+      },
       undefined,
     );
     const msg: LogEntryServerMessage = {
@@ -67,13 +73,18 @@ class Lobby {
     }
   };
 
-  startTick() {
-    this.stopTick();
+  start() {
+    this.stop();
     this.tickHandle = setInterval(this.onTick, tickMillis);
+    this.deviceServer = new DeviceServer();
+    for (const deviceClient of createVirtualDevices(100)) {
+      this.deviceServer.addClient(deviceClient);
+    }
   }
 
-  stopTick() {
+  stop() {
     clearInterval(this.tickHandle);
+    this.deviceServer.stop();
   }
 
   shouldBeDeleted(): boolean {
@@ -222,7 +233,7 @@ const lobbies = new Map<string, Lobby>();
 setInterval(() => {
   for (const [lobbyCode, lobby] of lobbies.entries()) {
     if (lobby.shouldBeDeleted()) {
-      lobby.stopTick();
+      lobby.stop();
       lobbies.delete(lobbyCode);
     }
   }
@@ -236,7 +247,7 @@ wss.on("connection", (ws, request) => {
     let lobby = lobbies.get(lobbyCode);
     if (!lobby) {
       lobby = new Lobby();
-      lobby.startTick();
+      lobby.start();
       lobbies.set(lobbyCode, lobby);
     }
 

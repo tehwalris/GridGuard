@@ -1,3 +1,5 @@
+import { Device } from "./state";
+
 export type Action =
   | AddUserAction
   | RemoveUserAction
@@ -38,4 +40,5 @@ export interface EndEventAction {
 }
 export interface TickSimulationAction {
   type: ActionType.TickSimulation;
+  devices: Device[];
 }

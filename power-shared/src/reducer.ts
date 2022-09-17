@@ -1,8 +1,9 @@
 import { original, produce } from "immer";
 import _ from "lodash";
 import Prando from "prando";
+import R from "ramda";
 import { Action, ActionType } from "./interfaces/action";
-import { Device, State, User } from "./interfaces/state";
+import { Device, GridPowerConsumption, State, User } from "./interfaces/state";
 import { unreachable } from "./util";
 
 const historySize = 20;
@@ -15,20 +16,27 @@ const gridMeanPower = gridYearlyEnergy / (365 * 24); // W
 
 function getPowerConsumption(
   tick: number,
-  toggles: State["toggles"],
-): { total: number; byDeviceClassWithoutSavings: { [key: string]: number } } {
+  devices: Device[],
+): GridPowerConsumption {
   let total = 0;
-  const byDeviceClassWithoutSavings: { [key: string]: number } = {};
-  const temp = gridMeanPower * getBasePowerConsumptionFromTick(tick);
-  for (const toggle of toggles) {
-    const thisDeviceWithoutSavings =
-      (temp * (1 - nonSmartRatio)) / toggles.length;
-
-    byDeviceClassWithoutSavings[toggle.key] = thisDeviceWithoutSavings;
-    total += toggle.powered ? thisDeviceWithoutSavings : 0;
+  const byDeviceClass: { [key: string]: number | undefined } = {};
+  const byDeviceClassWithoutSavings: { [key: string]: number | undefined } = {};
+  for (const deviceClassKey of allDeviceClassKeys) {
+    byDeviceClass[deviceClassKey] = 0;
+    byDeviceClassWithoutSavings[deviceClassKey] = 0;
   }
+
+  const temp = gridMeanPower * getBasePowerConsumptionFromTick(tick);
   total += temp * nonSmartRatio;
-  return { total, byDeviceClassWithoutSavings };
+
+  for (const device of devices) {
+    total += device.powerConsumption;
+    byDeviceClass[device.deviceClassKey]! += device.powerConsumption;
+    byDeviceClassWithoutSavings[device.deviceClassKey]! +=
+      device.powerConsumptionWithoutSavings;
+  }
+
+  return { total, byDeviceClass, byDeviceClassWithoutSavings };
 }
 
 function getBasePowerConsumptionFromTick(tick: number): number {
@@ -67,17 +75,22 @@ function makeDeviceIndicesById(devices: Device[]): {
   return deviceIndicesById;
 }
 
+export const allDeviceClassKeys = new Set([
+  "dishwasher",
+  "fridge",
+  "microwave",
+  "oven",
+  "light",
+  "heater",
+]);
+export const allDeviceClassKeysSorted = R.sortBy(
+  (v) => v,
+  [...allDeviceClassKeys],
+);
+
 export function makeInitialState(): State {
-  const deviceClassKeys = [
-    "dishwasher",
-    "fridge",
-    "microwave",
-    "oven",
-    "light",
-    "heater",
-  ];
   const meanProduction = gridMeanPower;
-  const toggles: State["toggles"] = deviceClassKeys.map((key) => ({
+  const toggles: State["toggles"] = allDeviceClassKeysSorted.map((key) => ({
     key,
     powered: true,
   }));
@@ -85,9 +98,14 @@ export function makeInitialState(): State {
   const prando = new Prando();
   const devices: Device[] = [];
   for (let i = 0; i < 50; i++) {
-    const deviceClassKey = prando.nextArrayItem(deviceClassKeys);
+    const deviceClassKey = prando.nextArrayItem(allDeviceClassKeysSorted);
     const id = prando.nextString(32);
-    devices.push({ id, deviceClassKey, powerConsumption: 3.14 });
+    devices.push({
+      id,
+      deviceClassKey,
+      powerConsumption: 3.14,
+      powerConsumptionWithoutSavings: 3.14,
+    });
   }
 
   return {
@@ -98,12 +116,12 @@ export function makeInitialState(): State {
     toggles,
     simulation: {
       tick: historySize,
-      powerConsumption: getPowerConsumption(historySize, toggles),
+      powerConsumption: getPowerConsumption(historySize, devices),
       powerProduction: getPowerProduction(historySize, meanProduction, false),
     },
     simulationHistory: _.times(historySize, (i) => ({
       tick: i,
-      powerConsumption: getPowerConsumption(i, toggles),
+      powerConsumption: getPowerConsumption(i, devices),
       powerProduction: getPowerProduction(i, meanProduction, false),
     })),
     eventOngoing: false,
@@ -168,6 +186,15 @@ export const reducer = (_state: State, action: Action): State =>
         break;
       }
       case ActionType.TickSimulation: {
+        if (
+          !action.devices.every((device) =>
+            allDeviceClassKeys.has(device.deviceClassKey),
+          )
+        ) {
+          throw new Error("invalid device class key");
+        }
+        state.devices = action.devices;
+        state.deviceIndicesById = makeDeviceIndicesById(action.devices);
         state.simulationHistory.shift();
         state.simulationHistory.push(
           _.cloneDeep(original(state.simulation) ?? state.simulation),
@@ -175,7 +202,7 @@ export const reducer = (_state: State, action: Action): State =>
         state.simulation.tick++;
         state.simulation.powerConsumption = getPowerConsumption(
           state.simulation.tick,
-          state.toggles,
+          state.devices,
         );
         break;
       }

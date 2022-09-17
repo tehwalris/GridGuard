@@ -21,15 +21,19 @@ export interface DeviceClassToggle {
 
 export interface SimulationState {
   tick: number;
-  powerConsumption: {
-    total: number;
-    byDeviceClassWithoutSavings: { [key: string]: number };
-  };
+  powerConsumption: GridPowerConsumption;
   powerProduction: number;
+}
+
+export interface GridPowerConsumption {
+  total: number;
+  byDeviceClass: { [key: string]: number | undefined };
+  byDeviceClassWithoutSavings: { [key: string]: number | undefined };
 }
 
 export interface Device {
   id: string;
   deviceClassKey: string;
   powerConsumption: number;
+  powerConsumptionWithoutSavings: number;
 }
