@@ -74,6 +74,7 @@ function Visualization({ state }: { state: State }) {
               device.coords![1] * (width - 2 * padding) +
               padding -
               itemSize / 2,
+            opacity: device.powerConsumption !== 0 ? 1 : 0.5,
           }}
         />
       ))}
