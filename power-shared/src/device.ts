@@ -155,6 +155,8 @@ abstract class DeviceClient {
 }
 
 class LegacyDeviceClient extends DeviceClient {
+  private latestAllowPowered = true;
+
   constructor(
     private deviceId: string,
     private deviceClassKey: string,
@@ -169,18 +171,22 @@ class LegacyDeviceClient extends DeviceClient {
       deviceId: this.deviceId,
       deviceClassKey: this.deviceClassKey,
     });
-    this.sendMessage?.({
-      type: MessageType.ReportDeviceClient,
-      powerConsumption: this.typicalPowerConsumption,
-      powerConsumptionWithoutSavings: this.typicalPowerConsumption,
-    });
-    await sleep(5000);
+    this.setPowered(true);
+    while (!this.isStopped()) {
+      await sleep(5000);
+    }
   }
 
-  onMessage(msg: PreferenceDeviceServerMessage): void {
+  async onMessage(msg: PreferenceDeviceServerMessage): Promise<void> {
+    this.latestAllowPowered = msg.allowPowered;
+    await sleep(Math.random() * 5000);
+    this.setPowered(this.latestAllowPowered);
+  }
+
+  private setPowered(powered: boolean) {
     this.sendMessage?.({
       type: MessageType.ReportDeviceClient,
-      powerConsumption: msg.allowPowered ? this.typicalPowerConsumption : 0,
+      powerConsumption: powered ? this.typicalPowerConsumption : 0,
       powerConsumptionWithoutSavings: this.typicalPowerConsumption,
     });
   }
