@@ -5,7 +5,6 @@ import {
   createStyles,
   Drawer,
   Stack,
-  Text,
 } from "@mantine/core";
 import { useState } from "react";
 import { Link } from "react-router-dom";
@@ -35,7 +34,7 @@ function UserHeader() {
         color={colors.contrast1![0]}
       />
       <Center p="md">
-        <Text size={25}>GRIDGUARD</Text>
+        <img height={40} src="/Logo.svg" alt="" />
       </Center>
       <Drawer
         opened={opened}

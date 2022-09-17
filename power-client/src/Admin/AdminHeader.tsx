@@ -11,15 +11,7 @@ const useStyles = createStyles((theme, _params, getRef) => ({
     color: theme.colors.contrast1,
   },
   logo: {
-    width: 300,
     height: "100%",
-    border: "1px solid black",
-  },
-  title: {
-    height: "100%",
-    fontSize: 36,
-    fontWeight: 700,
-    letterSpacing: 2,
   },
 }));
 
@@ -28,10 +20,9 @@ function AdminHeader() {
 
   return (
     <div className={classes.container}>
-      <Center className={classes.logo}>Logo</Center>
-      <Center inline className={classes.title}>
-        <Box p="sm">
-          <img height={75} src="Logi-3.svg" alt="" />
+      <Center inline className={classes.logo}>
+        <Box p="md" pl="xl">
+          <img height={80} src="Logo.svg" alt="" />
         </Box>
       </Center>
     </div>

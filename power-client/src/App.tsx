@@ -1,6 +1,7 @@
 import { Button, MantineProvider } from "@mantine/core";
 import { ActionType } from "power-shared";
 import { BrowserRouter, Link, Route, Routes } from "react-router-dom";
+import Admin from "./Admin/Admin";
 import { colors } from "./colors";
 import User from "./User/User";
 import { useUnilog } from "./useUnilog";
@@ -28,11 +29,11 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route
-            path="user/*"
-            element={<User state={state} userId={userId!} />}
+            path="admin/*"
+            element={<Admin state={state} runAction={runAction} />}
           />
           <Route
-            path="admin/*"
+            path="user/*"
             element={<User state={state} userId={userId!} />}
           />
           <Route path="visualization/*" element={<Visualization />} />

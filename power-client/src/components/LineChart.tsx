@@ -7,6 +7,7 @@ interface Props {
   data: number[];
   title: string;
   predictedDifference?: number;
+  simple?: boolean;
 }
 
 const useStyles = createStyles((theme, _params, getRef) => ({
@@ -35,7 +36,12 @@ function CustomClip({ ...props }) {
   );
 }
 
-function LineChart({ data, title, predictedDifference = 0 }: Props) {
+function LineChart({
+  data,
+  title,
+  predictedDifference = 0,
+  simple = false,
+}: Props) {
   const { classes } = useStyles();
 
   const predictedData = data.map((v, i) => {
@@ -53,7 +59,7 @@ function LineChart({ data, title, predictedDifference = 0 }: Props) {
       <VictoryChart domainPadding={20} height={260}>
         <VictoryAxis />
         <VictoryAxis
-          label="Load"
+          label={simple ? "" : "Load"}
           style={{
             axis: { stroke: "none" },
             axisLabel: { fontSize: 15, padding: 30 },
@@ -61,6 +67,8 @@ function LineChart({ data, title, predictedDifference = 0 }: Props) {
             tickLabels: { fontSize: 10, padding: 5 },
           }}
           dependentAxis
+          tickFormat={(t) => t.toFixed(1)}
+          tickValues={simple ? [1.0] : undefined}
           domain={
             data.length
               ? [Math.min(0.98, _.min(data)!), Math.max(1.02, _.max(data)!)]

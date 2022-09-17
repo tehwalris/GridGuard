@@ -75,7 +75,7 @@ function UserContent({ state, userId }: Props) {
       </Text>
       <Stack spacing={15}>
         <UserCard>
-          <LineChart data={recentLoad} title="Network Load" />
+          <LineChart data={recentLoad} title="Network Load" simple={true} />
         </UserCard>
         <UserCard backgroundColor={lastLoadBad ? colors.lightRed![0] : "white"}>
           <Center className={classes.imminent}>
