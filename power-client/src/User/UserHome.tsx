@@ -1,8 +1,7 @@
 import { Box, Center, createStyles, Group, Stack, Text } from "@mantine/core";
 import {
-  selectDeviceSimulationState,
   selectRecentLoad,
-  selectUser,
+  selectUserDeviceSimulationStates,
   State,
 } from "power-shared";
 import { Link } from "react-router-dom";
@@ -61,10 +60,10 @@ function UserContent({ state, userId }: Props) {
     color: lastLoadBad ? colors.red![0] : colors.primary1![0],
   });
 
-  const user = selectUser(state, userId);
-  const devicCount = user?.devices
-    .map((device) => selectDeviceSimulationState(state, device.id))
-    .reduce((p, c) => p + +!c!.powered, 0);
+  const affectedDeviceCount = selectUserDeviceSimulationStates(
+    state,
+    userId,
+  ).filter((s) => s.affected).length;
 
   return (
     <Box className={classes.container}>
@@ -95,7 +94,10 @@ function UserContent({ state, userId }: Props) {
           </UserCard>
           <UserCard>
             <Link to="/user/details">
-              <UserNumberBox number={devicCount!} label="Devices affected" />
+              <UserNumberBox
+                number={affectedDeviceCount}
+                label="Devices affected"
+              />
             </Link>
           </UserCard>
         </Group>

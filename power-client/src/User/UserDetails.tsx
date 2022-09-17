@@ -6,7 +6,11 @@ import {
   Text,
 } from "@mantine/core";
 import { IconInfoCircle } from "@tabler/icons";
-import { selectDeviceSimulationState, selectUser, State } from "power-shared";
+import {
+  selectDeviceSimulationState,
+  selectUserDevices,
+  State,
+} from "power-shared";
 
 const useStyles = createStyles((theme, _params, getRef) => ({
   container: {
@@ -31,14 +35,13 @@ interface Props {
 
 function UserContent({ state, userId }: Props) {
   const { classes } = useStyles();
-  const user = selectUser(state, userId);
   return (
     <div className={classes.container}>
       <Text className={classes.title} p="sm">
         YOUR DEVICES
       </Text>
       <Accordion>
-        {user?.devices.map((device) => {
+        {selectUserDevices(state, userId).map((device) => {
           const deviceState = selectDeviceSimulationState(state, device.id);
           const niceDeviceType =
             device.deviceClassKey.charAt(0).toUpperCase() +
@@ -55,7 +58,7 @@ function UserContent({ state, userId }: Props) {
                     />
                     <div>{niceDeviceType}</div>
                   </Group>
-                  {!deviceState?.powered && (
+                  {deviceState?.affected && (
                     <ActionIcon color="orange">
                       <IconInfoCircle />
                     </ActionIcon>
@@ -63,11 +66,12 @@ function UserContent({ state, userId }: Props) {
                 </Group>
               </Accordion.Control>
               <Accordion.Panel>
-                {!deviceState?.powered ? (
+                {deviceState?.affected ? (
                   <div>
                     To help prevent an immediate black-out, we have temporarily
-                    disabled all {niceDeviceType}s. We expect the situation to
-                    stabilize shortly and thank you for your cooperation!
+                    disabled all {niceDeviceType.toLowerCase()}s. We expect the
+                    situation to stabilize shortly and thank you for your
+                    cooperation!
                   </div>
                 ) : (
                   <div>{niceDeviceType}s are currently running normally!</div>

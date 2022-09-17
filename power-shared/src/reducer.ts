@@ -1,7 +1,8 @@
 import { original, produce } from "immer";
 import _ from "lodash";
+import Prando from "prando";
 import { Action, ActionType } from "./interfaces/action";
-import { State, User } from "./interfaces/state";
+import { Device, State, User } from "./interfaces/state";
 import { unreachable } from "./util";
 
 const historySize = 20;
@@ -48,18 +49,45 @@ function countPoweredToggles(toggles: State["toggles"]): number {
   return toggles.filter((t) => t.powered).length;
 }
 
+function makeDeviceIndicesById(devices: Device[]): {
+  [id: string]: number | undefined;
+} {
+  const deviceIndicesById: {
+    [id: string]: number | undefined;
+  } = {};
+  for (const [i, device] of devices.entries()) {
+    deviceIndicesById[device.id] = i;
+  }
+  return deviceIndicesById;
+}
+
 export function makeInitialState(): State {
-  const toggles: State["toggles"] = [
+  const deviceClassKeys = [
     "dishwasher",
     "fridge",
     "microwave",
     "oven",
     "light",
     "heater",
-  ].map((key, i) => ({ key, powered: true }));
+  ];
   const meanProduction = gridMeanPower;
+  const toggles: State["toggles"] = deviceClassKeys.map((key) => ({
+    key,
+    powered: true,
+  }));
+
+  const prando = new Prando();
+  const devices: Device[] = [];
+  for (let i = 0; i < 50; i++) {
+    const deviceClassKey = prando.nextArrayItem(deviceClassKeys);
+    const id = prando.nextString(32);
+    devices.push({ id, deviceClassKey, powerConsumption: 3.14 });
+  }
+
   return {
     users: [],
+    devices,
+    deviceIndicesById: makeDeviceIndicesById(devices),
     meanProduction,
     toggles,
     simulation: {
@@ -78,11 +106,7 @@ export function makeInitialState(): State {
 function makeInitialUser(id: string): User {
   return {
     id,
-    devices: [
-      { id: `dishwasher-${id}-0`, deviceClassKey: "dishwasher" },
-      { id: `fridge-${id}-0`, deviceClassKey: "fridge" },
-      { id: `oven-${id}-0`, deviceClassKey: "oven" },
-    ],
+    seed: (new Prando(id) as any).hashCode(id), // HACK
   };
 }
 

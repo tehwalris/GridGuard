@@ -1,5 +1,7 @@
 export interface State {
   users: User[];
+  devices: Device[];
+  deviceIndicesById: { [id: string]: number | undefined };
   meanProduction: number;
   toggles: DeviceClassToggle[];
   simulation: SimulationState;
@@ -8,7 +10,7 @@ export interface State {
 
 export interface User {
   id: string;
-  devices: Device[];
+  seed: number;
 }
 
 export interface DeviceClassToggle {
@@ -28,4 +30,5 @@ export interface SimulationState {
 export interface Device {
   id: string;
   deviceClassKey: string;
+  powerConsumption: number;
 }

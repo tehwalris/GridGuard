@@ -59,11 +59,7 @@ describe("reducer", () => {
         (state) => {
           state.users.push({
             id: "someId",
-            devices: [
-              { id: "dishwasher-someId-0", deviceClassKey: "dishwasher" },
-              { id: "fridge-someId-0", deviceClassKey: "fridge" },
-              { id: "oven-someId-0", deviceClassKey: "oven" },
-            ],
+            seed: -1869716294,
           });
         },
       ),

@@ -15,6 +15,9 @@ export enum MessageType {
   ReportUndoServer = "ReportUndoServer",
   SubmitEntryClient = "SubmitEntryClient",
   RequestUndoClient = "RequestUndoClient",
+  PreferenceDeviceServer = "PreferenceDeviceServer",
+  CreateDeviceClient = "CreateDeviceClient",
+  ReportDeviceClient = "ReportDeviceClient",
 }
 
 export type ServerMessage =
@@ -64,4 +67,25 @@ export interface SubmitEntryClientMessage {
 export interface RequestUndoClientMessage {
   type: MessageType.RequestUndoClient;
   undoKey: string;
+}
+
+export type DeviceServerMessage = PreferenceDeviceServerMessage;
+
+export interface PreferenceDeviceServerMessage {
+  type: MessageType.PreferenceDeviceServer;
+  allowPowered: boolean;
+}
+
+export type DeviceClientMessage =
+  | CreateDeviceClientMessage
+  | ReportDeviceClientMessage;
+
+export interface CreateDeviceClientMessage {
+  type: MessageType.CreateDeviceClient;
+  deviceClassKey: string;
+}
+
+export interface ReportDeviceClientMessage {
+  type: MessageType.ReportDeviceClient;
+  powerConsumption: number;
 }
