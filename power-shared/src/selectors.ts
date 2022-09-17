@@ -10,6 +10,7 @@ export interface DeviceClassSimulationState {
   key: string;
   powered: boolean;
   powerConsumption: number;
+  estimatedPowerConsumptionWithoutSavings: number;
 }
 
 export function selectUser(state: State, userId: string): User | undefined {
@@ -53,12 +54,15 @@ export function selectDeviceClassSimulationState(
     return undefined;
   }
   const powered = deviceClassToggle.powered;
-  const powerConsumption =
-    state.simulation.powerConsumption.byDeviceClass[deviceClassKey] ?? 0;
+  const estimatedPowerConsumptionWithoutSavings =
+    state.simulation.powerConsumption.byDeviceClassWithoutSavings[
+      deviceClassKey
+    ] ?? 0;
   return {
     key: deviceClassKey,
     powered,
-    powerConsumption,
+    powerConsumption: powered ? estimatedPowerConsumptionWithoutSavings : 0,
+    estimatedPowerConsumptionWithoutSavings,
   };
 }
 

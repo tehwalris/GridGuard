@@ -18,7 +18,10 @@ export interface DeviceClassToggle {
 
 export interface SimulationState {
   tick: number;
-  powerConsumption: { total: number; byDeviceClass: { [key: string]: number } };
+  powerConsumption: {
+    total: number;
+    byDeviceClassWithoutSavings: { [key: string]: number };
+  };
   powerProduction: number;
 }
 

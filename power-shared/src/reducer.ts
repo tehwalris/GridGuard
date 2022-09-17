@@ -15,19 +15,19 @@ const gridMeanPower = gridYearlyEnergy / (365 * 24); // W
 function getPowerConsumption(
   tick: number,
   toggles: State["toggles"],
-): { total: number; byDeviceClass: { [key: string]: number } } {
+): { total: number; byDeviceClassWithoutSavings: { [key: string]: number } } {
   let total = 0;
-  const byDeviceClass: { [key: string]: number } = {};
+  const byDeviceClassWithoutSavings: { [key: string]: number } = {};
   const temp = gridMeanPower * getBasePowerConsumptionFromTick(tick);
   for (const toggle of toggles) {
-    const thisDevice = toggle.powered
-      ? (temp * (1 - nonSmartRatio)) / toggles.length
-      : 0;
-    byDeviceClass[toggle.key] = thisDevice;
-    total += thisDevice;
+    const thisDeviceWithoutSavings =
+      (temp * (1 - nonSmartRatio)) / toggles.length;
+
+    byDeviceClassWithoutSavings[toggle.key] = thisDeviceWithoutSavings;
+    total += toggle.powered ? thisDeviceWithoutSavings : 0;
   }
   total += temp * nonSmartRatio;
-  return { total, byDeviceClass };
+  return { total, byDeviceClassWithoutSavings };
 }
 
 function getBasePowerConsumptionFromTick(tick: number): number {
