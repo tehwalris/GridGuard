@@ -260,20 +260,38 @@ class SometimesOnDeviceClient extends DeviceClient {
 }
 
 export function createVirtualDevices(deviceCount: number): DeviceClient[] {
+  const settingsByDeviceClass: {
+    [key: string]:
+      | { typicalOnTime: number; typicalOffTime: number }
+      | undefined;
+  } = {
+    fridge: { typicalOnTime: 10000, typicalOffTime: 40000 },
+    microwave: { typicalOnTime: 30000, typicalOffTime: 400000 },
+    oven: { typicalOnTime: 100000, typicalOffTime: 700000 },
+    light: { typicalOnTime: 30000, typicalOffTime: 30000 },
+    heater: { typicalOnTime: 800000, typicalOffTime: 600000 },
+  };
+
   // TODO HACK need to scale this down to realistic values and scale up somewhere else
   const targetPower = gridMeanPower * (1 - nonSmartRatio);
   return _.times(deviceCount, () => {
-    const typicalOnTime = 10000;
-    const typicalOffTime = 40000;
-    const dutyCycle = typicalOnTime / (typicalOnTime + typicalOffTime);
-    return new SometimesOnDeviceClient(
-      genUuid(),
+    const deviceClass =
       allDeviceClassKeysSorted[
         Math.floor(Math.random() * allDeviceClassKeysSorted.length)
-      ],
+      ];
+    const settings = settingsByDeviceClass[deviceClass] ?? {
+      typicalOnTime: 10000,
+      typicalOffTime: 40000,
+    };
+    const dutyCycle =
+      settings.typicalOnTime /
+      (settings.typicalOnTime + settings.typicalOffTime);
+    return new SometimesOnDeviceClient(
+      genUuid(),
+      deviceClass,
       targetPower / deviceCount / dutyCycle,
-      typicalOnTime,
-      typicalOffTime,
+      settings.typicalOnTime,
+      settings.typicalOffTime,
     );
   });
 }
