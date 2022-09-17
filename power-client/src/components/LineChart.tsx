@@ -71,6 +71,17 @@ function LineChart({ data, title, predictedDifference = 0 }: Props) {
           interpolation="basis"
           style={{
             data: {
+              stroke: colors.green![0],
+              strokeDasharray: "8, 4",
+              strokeWidth: 1,
+            },
+          }}
+          data={new Array(data.length).fill(1)}
+        />
+        <VictoryLine
+          interpolation="basis"
+          style={{
+            data: {
               stroke: colors.contrast2![0],
               strokeDasharray: "8, 4",
               strokeWidth: 4,

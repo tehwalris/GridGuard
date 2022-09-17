@@ -12,10 +12,16 @@ interface Props {
 
 function AdminDevice({ device, onPoweredChange }: Props) {
   const { classes } = useStyles();
+  const niceDeviceKey =
+    device.key.charAt(0).toUpperCase() + device.key.slice(1);
   return (
     <Group className={classes.container} position="apart">
-      {device.key}:
+      <Group spacing={5}>
+        <img height={24} src={"/" + device.key + ".svg"} alt="" />
+        <div>{niceDeviceKey}</div>
+      </Group>
       <Switch
+        size="lg"
         checked={!device.powered}
         onChange={(event) => onPoweredChange(!event.currentTarget.checked)}
         onLabel="ON"

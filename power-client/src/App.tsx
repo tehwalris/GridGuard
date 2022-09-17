@@ -1,10 +1,10 @@
 import { Button, MantineProvider } from "@mantine/core";
 import { ActionType } from "power-shared";
 import { BrowserRouter, Link, Route, Routes } from "react-router-dom";
-import Admin from "./Admin/Admin";
 import { colors } from "./colors";
 import User from "./User/User";
 import { useUnilog } from "./useUnilog";
+import Visualization from "./Visualization/Visualization";
 
 const serverOrigin =
   process.env.NODE_ENV === "development"
@@ -33,8 +33,9 @@ function App() {
           />
           <Route
             path="admin/*"
-            element={<Admin state={state} runAction={runAction} />}
+            element={<User state={state} userId={userId!} />}
           />
+          <Route path="visualization/*" element={<Visualization />} />
           <Route
             path="/"
             element={

@@ -1,39 +1,51 @@
 import { Box, Center, createStyles, Group, Stack, Text } from "@mantine/core";
-import { selectRecentLoad, State } from "power-shared";
+import {
+  selectDeviceSimulationState,
+  selectRecentLoad,
+  selectUser,
+  State,
+} from "power-shared";
 import { Link } from "react-router-dom";
+import { colors } from "../colors";
 import LineChart from "../components/LineChart";
 import UserCard from "../User/UserCard";
 import UserNumberBox from "./UserNumberBox";
 
-const useStyles = createStyles((theme, _params, getRef) => ({
-  container: {
-    width: "100%",
-    height: "100%",
-    margin: 10,
-    marginLeft: 20,
-  },
-  border: { border: "1px solid black" },
-  imminent: { width: "100%", height: 20 },
-  title: {
-    fontSize: 20,
-    color: theme.colors.primary1,
-    letterSpacing: 2,
-    fontWeight: 700,
-  },
-  subtitle: {
-    fontSize: 13,
-    color: theme.colors.contrast2,
-    marginBottom: 10,
-  },
-  leftBorder: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    height: "100%",
-    width: 10,
-    background: "white",
-  },
-}));
+const useStyles = createStyles(
+  (theme, { color }: { color: string }, getRef) => ({
+    container: {
+      width: "100%",
+      margin: 20,
+      marginLeft: 40,
+    },
+    border: { border: "1px solid black" },
+    imminent: {
+      width: "100%",
+      color,
+      fontWeight: 700,
+      letterSpacing: 2,
+    },
+    title: {
+      fontSize: 20,
+      color: theme.colors.primary1,
+      letterSpacing: 2,
+      fontWeight: 700,
+    },
+    subtitle: {
+      fontSize: 13,
+      color: theme.colors.contrast2,
+      fontWeight: 400,
+    },
+    leftBorder: {
+      position: "absolute",
+      top: 0,
+      left: 0,
+      height: "100%",
+      width: 20,
+      background: "white",
+    },
+  }),
+);
 
 interface Props {
   state: State;
@@ -41,23 +53,41 @@ interface Props {
 }
 
 function UserContent({ state, userId }: Props) {
-  const { classes } = useStyles();
-
   const recentLoad = selectRecentLoad(state);
+  const lastLoad = selectRecentLoad(state).slice(-1)[0];
+  const lastLoadBad = lastLoad > 1.01 || lastLoad < 0.99;
+
+  const { classes } = useStyles({
+    color: lastLoadBad ? colors.red![0] : colors.primary1![0],
+  });
+
+  const user = selectUser(state, userId);
+  const devicCount = user?.devices
+    .map((device) => selectDeviceSimulationState(state, device.id))
+    .reduce((p, c) => p + +!c!.powered, 0);
 
   return (
     <Box className={classes.container}>
       <div className={classes.leftBorder} />
       <Text className={classes.title}>HELLO, USER</Text>
-      <Text className={classes.subtitle}>
+      <Text className={classes.subtitle} pb="sm">
         This is an overview of the current grid situation
       </Text>
       <Stack spacing={15}>
         <UserCard>
           <LineChart data={recentLoad} title="Network Load" />
         </UserCard>
-        <UserCard>
-          <Center className={classes.imminent}>OUTAGE IMMINENT!</Center>
+        <UserCard backgroundColor={lastLoadBad ? colors.lightRed![0] : "white"}>
+          <Center className={classes.imminent}>
+            <Stack p={0} spacing="xs">
+              {lastLoadBad ? "OUTAGE IMMINENT!" : "GRID STATUS NORMAL"}
+              <Text size={12} className={classes.subtitle}>
+                {lastLoadBad
+                  ? "Your devices may be turned off!"
+                  : "Your devices are not affected!"}
+              </Text>
+            </Stack>
+          </Center>
         </UserCard>
         <Group position="apart" grow>
           <UserCard>
@@ -65,7 +95,7 @@ function UserContent({ state, userId }: Props) {
           </UserCard>
           <UserCard>
             <Link to="/user/details">
-              <UserNumberBox number={2} label="Devices affected" />
+              <UserNumberBox number={devicCount!} label="Devices affected" />
             </Link>
           </UserCard>
         </Group>
