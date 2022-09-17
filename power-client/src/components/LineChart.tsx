@@ -44,11 +44,17 @@ function LineChart({
 }: Props) {
   const { classes } = useStyles();
 
+  const dataAvg = data.slice(-3).reduce((a, b) => a + b) / 3;
+
   const predictedData = data.map((v, i) => {
     const fractionProgress = i / data.length;
-    return (
-      v - predictedDifference / (1 + Math.exp(-10 * (fractionProgress - 0.5)))
-    );
+    return {
+      x: data.length + i - 1,
+      y:
+        data.slice(-1)[0] -
+        (predictedDifference || data.slice(-1)[0] - dataAvg) /
+          (1 + Math.exp(-10 * (fractionProgress - 0.5))),
+    };
   });
 
   return (
@@ -56,15 +62,18 @@ function LineChart({
       <Text className={classes.title} p="sm" pt={0} size={26}>
         {title}
       </Text>
-      <VictoryChart domainPadding={20} height={260}>
-        <VictoryAxis />
+      <VictoryChart domainPadding={{ x: [20, 20], y: [0, 0] }} height={260}>
+        {!simple ? (
+          <VictoryAxis tickValues={[20]} tickFormat={(t) => "Now"} />
+        ) : undefined}
         <VictoryAxis
+          key="1"
           label={simple ? "" : "Load"}
           style={{
             axis: { stroke: "none" },
             axisLabel: { fontSize: 15, padding: 30 },
             ticks: { stroke: "grey", size: 5 },
-            tickLabels: { fontSize: 10, padding: 5 },
+            tickLabels: { fontSize: simple ? 19 : 12, padding: 5 },
           }}
           dependentAxis
           tickFormat={simple ? (t) => t.toFixed(1) : undefined}
@@ -84,19 +93,32 @@ function LineChart({
               strokeWidth: 1,
             },
           }}
-          data={new Array(data.length).fill(1)}
+          data={new Array(simple ? data.length : data.length * 2 - 1).fill(1)}
         />
-        <VictoryLine
-          interpolation="basis"
-          style={{
-            data: {
-              stroke: colors.contrast2![0],
-              strokeDasharray: "8, 4",
-              strokeWidth: 4,
-            },
-          }}
-          data={predictedData}
-        />
+        {!simple && (
+          <VictoryLine
+            interpolation="basis"
+            style={{
+              data: {
+                stroke: colors.contrast2![0],
+                strokeDasharray: "8, 4",
+                strokeWidth: 4,
+              },
+            }}
+            data={predictedData}
+          />
+        )}
+        {!simple && (
+          <VictoryAxis
+            key="2"
+            dependentAxis
+            offsetX={215}
+            style={{
+              axis: { stroke: colors.contrast2![0] },
+            }}
+            tickFormat={(t) => ""}
+          />
+        )}
         <VictoryLine
           interpolation="basis"
           style={{
