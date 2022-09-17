@@ -32,7 +32,7 @@ function UserContent({ state }: Props) {
         <UserCard>
           <Center className={classes.imminent}>OUTAGE IMMINENT!</Center>
         </UserCard>
-        <Group position="center" grow>
+        <Group position="apart" grow>
           <UserCard>
             <UserNumberBox number={1} label="Power Saved" />
           </UserCard>

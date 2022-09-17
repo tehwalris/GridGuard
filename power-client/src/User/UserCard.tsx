@@ -4,6 +4,7 @@ const useStyles = createStyles((theme, params, getRef) => ({
   container: {
     backgroundColor: "white",
     borderRadius: 20,
+    flexGrow: 1,
   },
 }));
 
