@@ -4,9 +4,14 @@ import {
   DeviceClientMessage,
   DeviceServerMessage,
   MessageType,
+  PreferenceDeviceServerMessage,
 } from "./interfaces/message";
 import { Device } from "./interfaces/state";
-import { allDeviceClassKeysSorted } from "./reducer";
+import {
+  allDeviceClassKeysSorted,
+  gridMeanPower,
+  nonSmartRatio,
+} from "./reducer";
 import { sleep, unreachable } from "./util";
 
 enum DeviceClientLifecycle {
@@ -52,6 +57,8 @@ export class DeviceServer {
           return;
         }
         device.powerConsumption = msg.powerConsumption;
+        device.powerConsumptionWithoutSavings =
+          msg.powerConsumptionWithoutSavings;
         break;
       default:
         return unreachable(msg);
@@ -85,7 +92,6 @@ abstract class DeviceClient {
   private lifecycleState: DeviceClientLifecycle =
     DeviceClientLifecycle.BeforeStart;
   protected sendMessage: ((msg: DeviceClientMessage) => void) | undefined;
-  protected allowPowered: boolean = true;
 
   start(sendMessage: (msg: DeviceClientMessage) => void) {
     if (this.lifecycleState !== DeviceClientLifecycle.BeforeStart) {
@@ -115,17 +121,19 @@ abstract class DeviceClient {
 
   protected abstract run(): Promise<void>;
 
-  onMessage(msg: DeviceServerMessage) {
-    this.allowPowered = msg.allowPowered;
-  }
+  protected abstract onMessage(msg: DeviceServerMessage): void;
 
   protected isStopped(): boolean {
     return this.lifecycleState === DeviceClientLifecycle.Stopped;
   }
 }
 
-class DoNothingDeviceClient extends DeviceClient {
-  constructor(private deviceId: string, private deviceClassKey: string) {
+class LegacyDeviceClient extends DeviceClient {
+  constructor(
+    private deviceId: string,
+    private deviceClassKey: string,
+    private typicalPowerConsumption: number,
+  ) {
     super();
   }
 
@@ -135,19 +143,35 @@ class DoNothingDeviceClient extends DeviceClient {
       deviceId: this.deviceId,
       deviceClassKey: this.deviceClassKey,
     });
+    this.sendMessage?.({
+      type: MessageType.ReportDeviceClient,
+      powerConsumption: this.typicalPowerConsumption,
+      powerConsumptionWithoutSavings: this.typicalPowerConsumption,
+    });
     await sleep(5000);
+  }
+
+  onMessage(msg: PreferenceDeviceServerMessage): void {
+    this.sendMessage?.({
+      type: MessageType.ReportDeviceClient,
+      powerConsumption: msg.allowPowered ? this.typicalPowerConsumption : 0,
+      powerConsumptionWithoutSavings: this.typicalPowerConsumption,
+    });
   }
 }
 
 export function createVirtualDevices(deviceCount: number): DeviceClient[] {
+  // TODO HACK need to scale this down to realistic values and scale up somewhere else
+  const targetPower = gridMeanPower * (1 - nonSmartRatio);
   return _.times(
     deviceCount,
     () =>
-      new DoNothingDeviceClient(
+      new LegacyDeviceClient(
         genUuid(),
         allDeviceClassKeysSorted[
           Math.floor(Math.random() * allDeviceClassKeysSorted.length)
         ],
+        targetPower / deviceCount,
       ),
   );
 }

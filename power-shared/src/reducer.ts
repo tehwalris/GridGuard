@@ -9,10 +9,10 @@ import { unreachable } from "./util";
 const historySize = 20;
 export const tickMillis = 500;
 
-const nonSmartRatio = 0.8;
+export const nonSmartRatio = 0.8;
 
 const gridYearlyEnergy = 58.1 * 1e9 * 1000; // Wh
-const gridMeanPower = gridYearlyEnergy / (365 * 24); // W
+export const gridMeanPower = gridYearlyEnergy / (365 * 24); // W
 
 function getPowerConsumption(
   tick: number,
@@ -59,10 +59,6 @@ function getPowerProduction(
   );
 }
 
-function countPoweredToggles(toggles: State["toggles"]): number {
-  return toggles.filter((t) => t.powered).length;
-}
-
 function makeDeviceIndicesById(devices: Device[]): {
   [id: string]: number | undefined;
 } {
@@ -94,6 +90,7 @@ export function makeInitialState(): State {
     key,
     powered: true,
   }));
+  console.log("DEBUG toggles", toggles);
 
   const prando = new Prando();
   const devices: Device[] = [];

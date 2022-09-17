@@ -89,4 +89,5 @@ export interface CreateDeviceClientMessage {
 export interface ReportDeviceClientMessage {
   type: MessageType.ReportDeviceClient;
   powerConsumption: number;
+  powerConsumptionWithoutSavings: number;
 }
