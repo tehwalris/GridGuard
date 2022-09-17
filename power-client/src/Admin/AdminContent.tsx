@@ -28,9 +28,9 @@ function AdminContent({ state, runAction }: Props) {
   const recentLoad = selectRecentLoad(state);
   const currentLoad = recentLoad.slice(-1)[0];
 
-  const [draftPowered, setDraftPowered] = useState<{ [key: string]: boolean }>(
-    {},
-  );
+  const [draftPowered, setDraftPowered] = useState<{
+    [key: string]: boolean | undefined;
+  }>({});
 
   // TODO this is out of date
   const maxByClass =
@@ -41,19 +41,20 @@ function AdminContent({ state, runAction }: Props) {
 
   const toggles = state.toggles;
 
-  toggles
-    .map((toggle) =>
-      draftPowered[toggle.key] === false
-        ? maxByClass[toggle.key]! - currentByClass[toggle.key]!
-        : draftPowered[toggle.key] === true
-        ? currentByClass[toggle.key]!
-        : 0,
+  console.log(draftPowered);
+
+  const potentialSave = toggles
+    .map(
+      (toggle) =>
+        currentByClass[toggle.key]! -
+        (draftPowered[toggle.key] ?? toggle.powered
+          ? maxByClass[toggle.key]!
+          : 0),
     )
     .reduce((c, p) => c + p, 0);
 
   const totalConsumption = state.simulation.powerConsumption.total;
 
-  const potentialSave = 0;
   return (
     <Box p="md" className={classes.container}>
       <Grid grow gutter="lg">

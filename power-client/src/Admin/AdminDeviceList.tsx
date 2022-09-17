@@ -22,7 +22,7 @@ const useStyles = createStyles((theme, _params, getRef) => ({
 interface Props {
   toggles: DeviceClassToggle[];
   runAction: RunAction;
-  draftPowered: { [key: string]: boolean };
+  draftPowered: { [key: string]: boolean | undefined };
   setDraftPowered: (smth: any) => void;
 }
 
@@ -40,7 +40,7 @@ function AdminDeviceList({
         runAction(() => ({
           type: ActionType.SetToggle,
           key: toggle.key,
-          powered: draftPowered[toggle.key],
+          powered: draftPowered[toggle.key] ?? toggle.powered,
         }));
       }
     }
