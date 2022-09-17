@@ -5,7 +5,6 @@ const useStyles = createStyles((theme, _params, getRef) => ({
   container: {
     height: "100%",
     width: "100%",
-    fontSize: 20,
     backgroundColor: "white",
     position: "relative",
   },
@@ -23,7 +22,7 @@ const useStyles = createStyles((theme, _params, getRef) => ({
     ":after": {
       content: "''",
       background: theme.colors.contrast2[0],
-      width: 260,
+      width: 190,
       height: 2,
       display: "block",
     },
@@ -34,7 +33,7 @@ function AdminNav() {
   const { classes } = useStyles();
 
   return (
-    <Stack className={classes.container}>
+    <Stack className={classes.container} spacing={0}>
       <div className={classes.triangle} />
       <div className={classes.addSeparator}>
         <AdminNavElement to="" label="DASHBOARD" active={true} />

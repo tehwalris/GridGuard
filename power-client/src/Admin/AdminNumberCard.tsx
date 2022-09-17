@@ -8,9 +8,11 @@ const useStyles = createStyles(
       fontSize: 30,
       color: labelColor || theme.colors.primary1[0],
       textDecoration: "none !important",
+      fontWeight: 800,
+      letterSpacing: 2,
     },
     label: {
-      fontSize: 12,
+      fontSize: 14,
       color: theme.colors.contrast2[0],
       textDecoration: "none",
     },

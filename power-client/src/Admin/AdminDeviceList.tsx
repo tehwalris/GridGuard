@@ -7,6 +7,16 @@ import AdminDevice from "./AdminDevice";
 const useStyles = createStyles((theme, _params, getRef) => ({
   container: { height: "100%", width: "100%" },
   title: { letterSpacing: 2, fontWeight: 800, color: theme.colors.primary1 },
+  addSeparator: {
+    ":after": {
+      content: "''",
+      background: theme.colors.contrast2[0],
+      width: "100%",
+      height: 1,
+      display: "block",
+      marginTop: 15,
+    },
+  },
 }));
 
 interface Props {
@@ -48,20 +58,22 @@ function AdminDeviceList({
   return (
     <AdminCard>
       <Stack p={0} className={classes.container}>
-        <Text className={classes.title} size={30}>
+        <Text className={classes.title} size={26} pl={12}>
           FILTERS
         </Text>
         {toggles.map((toggle) => (
-          <AdminDevice
-            key={toggle.key}
-            device={{
-              ...toggle,
-              powered: draftPowered[toggle.key] ?? toggle.powered,
-            }}
-            onPoweredChange={(v) =>
-              setDraftPowered((old: any) => ({ ...old, [toggle.key]: v }))
-            }
-          />
+          <div className={classes.addSeparator}>
+            <AdminDevice
+              key={toggle.key}
+              device={{
+                ...toggle,
+                powered: draftPowered[toggle.key] ?? toggle.powered,
+              }}
+              onPoweredChange={(v) =>
+                setDraftPowered((old: any) => ({ ...old, [toggle.key]: v }))
+              }
+            />
+          </div>
         ))}
         <Group grow>
           <Button

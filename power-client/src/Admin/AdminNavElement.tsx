@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 const useStyles = createStyles((theme, _params, getRef) => ({
   container: {
-    fontSize: 25,
+    fontSize: 20,
     height: 100,
     color: theme.colors.primary1,
     letterSpacing: 2,

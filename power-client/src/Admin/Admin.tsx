@@ -15,7 +15,7 @@ function Admin({ state, runAction }: Props) {
     <AppShell
       padding={0}
       navbar={
-        <Navbar withBorder={false} width={{ base: 300 }}>
+        <Navbar withBorder={false} width={{ base: 220 }}>
           <AdminNav />
         </Navbar>
       }
