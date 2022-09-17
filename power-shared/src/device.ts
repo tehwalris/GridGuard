@@ -6,7 +6,7 @@ import {
   MessageType,
   PreferenceDeviceServerMessage,
 } from "./interfaces/message";
-import { Device } from "./interfaces/state";
+import { Device, DeviceClassToggle } from "./interfaces/state";
 import {
   allDeviceClassKeysSorted,
   gridMeanPower,
@@ -86,6 +86,32 @@ export class DeviceServer {
     }
     return devices;
   }
+
+  setToggles(toggles: DeviceClassToggle[]) {
+    const toggleByDeviceClassKey = new Map<string, DeviceClassToggle>();
+    for (const toggle of toggles) {
+      toggleByDeviceClassKey.set(toggle.key, toggle);
+    }
+
+    for (const client of this.clients) {
+      const deviceId = this.deviceIdByClient.get(client);
+      if (deviceId === undefined) {
+        continue;
+      }
+      const device = this.devices.get(deviceId);
+      if (!device) {
+        continue;
+      }
+      const toggle = toggleByDeviceClassKey.get(device.deviceClassKey);
+      if (!toggle) {
+        continue;
+      }
+      client.onMessage({
+        type: MessageType.PreferenceDeviceServer,
+        allowPowered: toggle.powered,
+      });
+    }
+  }
 }
 
 abstract class DeviceClient {
@@ -121,7 +147,7 @@ abstract class DeviceClient {
 
   protected abstract run(): Promise<void>;
 
-  protected abstract onMessage(msg: DeviceServerMessage): void;
+  abstract onMessage(msg: DeviceServerMessage): void;
 
   protected isStopped(): boolean {
     return this.lifecycleState === DeviceClientLifecycle.Stopped;

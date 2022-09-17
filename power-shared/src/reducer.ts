@@ -1,4 +1,4 @@
-import { original, produce } from "immer";
+import { current, original, produce } from "immer";
 import _ from "lodash";
 import Prando from "prando";
 import R from "ramda";
@@ -155,6 +155,12 @@ export const reducer = (_state: State, action: Action): State =>
         for (const toggle of state.toggles) {
           if (toggle.key === action.key) {
             toggle.powered = action.powered;
+            console.log(
+              "DEBUG",
+              action.powered,
+              current(toggle),
+              current(state.toggles),
+            );
             return;
           }
         }

@@ -56,6 +56,7 @@ class Lobby {
   }
 
   private onTick = () => {
+    this.deviceServer.setToggles(this.state.toggles);
     const entry = this.pushToLog(
       {
         type: ActionType.TickSimulation,
