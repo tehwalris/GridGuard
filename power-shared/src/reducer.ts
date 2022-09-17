@@ -40,8 +40,14 @@ function getPowerConsumption(
 }
 
 function getBasePowerConsumptionFromTick(tick: number): number {
-  // TODO can't have math random in reducer
-  return 1; //+ 0.005 * Math.sin(tick / 3 + 0.2 * Math.sin(tick)) + Math.random() / 100
+  return (
+    1 +
+    0.003 *
+      Math.sin(
+        tick / 3 + Math.sin(tick) + Math.sin(tick / 10) + 0.1 * Math.random(),
+      ) +
+    0.005 * Math.random()
+  );
 }
 
 function getPowerProduction(
@@ -50,9 +56,11 @@ function getPowerProduction(
   eventOngoing: boolean,
 ): number {
   return (
-    (eventOngoing ? 0.95 : 1) * meanProduction /*
-      *(1 + 0.005 * Math.sin((tick + 2) / 2.5)) +
-    Math.random() / 100*/
+    (eventOngoing ? 0.95 : 1) *
+    meanProduction *
+    (1 +
+      0.005 * Math.sin((tick / 3 + 2) / 2.5 + Math.sin(3 * tick + 1.5)) +
+      0.003 * Math.random())
   );
 }
 
@@ -102,6 +110,12 @@ export function makeInitialState(): State {
     });
   }
 
+  const getPowerConsumptionHacked = (tick: number) => {
+    const powerConsumption = getPowerConsumption(tick, devices);
+    powerConsumption.total /= nonSmartRatio;
+    return powerConsumption;
+  };
+
   return {
     users: [],
     devices,
@@ -110,12 +124,12 @@ export function makeInitialState(): State {
     toggles,
     simulation: {
       tick: historySize,
-      powerConsumption: getPowerConsumption(historySize, devices),
+      powerConsumption: getPowerConsumptionHacked(historySize),
       powerProduction: getPowerProduction(historySize, meanProduction, false),
     },
     simulationHistory: _.times(historySize, (i) => ({
       tick: i,
-      powerConsumption: getPowerConsumption(i, devices),
+      powerConsumption: getPowerConsumptionHacked(i),
       powerProduction: getPowerProduction(i, meanProduction, false),
     })),
     eventOngoing: false,
@@ -168,21 +182,10 @@ export const reducer = (_state: State, action: Action): State =>
       }
       case ActionType.StartEvent: {
         state.eventOngoing = true;
-        state.simulation.powerProduction = getPowerProduction(
-          historySize,
-          state.meanProduction,
-          true,
-        );
-
         break;
       }
       case ActionType.EndEvent: {
         state.eventOngoing = false;
-        state.simulation.powerProduction = getPowerProduction(
-          historySize,
-          state.meanProduction,
-          false,
-        );
         break;
       }
       case ActionType.TickSimulation: {
@@ -203,6 +206,11 @@ export const reducer = (_state: State, action: Action): State =>
         state.simulation.powerConsumption = getPowerConsumption(
           state.simulation.tick,
           state.devices,
+        );
+        state.simulation.powerProduction = getPowerProduction(
+          historySize,
+          state.meanProduction,
+          state.eventOngoing,
         );
         break;
       }

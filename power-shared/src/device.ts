@@ -28,6 +28,7 @@ export class DeviceServer {
   private clients: DeviceClient[] = [];
   private devices = new Map<string, Device>();
   private deviceIdByClient = new WeakMap<DeviceClient, string>();
+  private lastTogglesByDeviceClassKey = new Map<string, DeviceClassToggle>();
 
   private onMessage(msg: DeviceClientMessage, client: DeviceClient) {
     switch (msg.type) {
