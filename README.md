@@ -9,6 +9,17 @@ _GridGuard_ puts a large swarm of private SmartDevices under a central command. 
 
 _TODO_
 
+### Pages
+
+- `/admin`: Admin panel where the government can monitor the grid and turn devices on and off.
+- `/user/home` and `/user/details`: Users see the live grid status and which (if any) devices they have are affected.
+- `/visualization`: displays a selection of the virtual SmartDevices and their on/off status.
+- `/event`: start and stop an "event" (reduction in electricity production like when a power plant goes offline)
+
+## Technical Info
+
+_TODO_
+
 ## Getting started
 
 ### Initial setup
