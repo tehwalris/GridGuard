@@ -42,11 +42,7 @@ function LineChart({ data, title }: Props) {
       <Text className={classes.title} p="sm" size={30}>
         {title}
       </Text>
-      <VictoryChart
-        // domainPadding will add space to each side of VictoryBar to
-        // prevent it from overlapping the axis
-        domainPadding={20}
-      >
+      <VictoryChart domainPadding={20}>
         <VictoryAxis />
         <VictoryAxis
           label="Load"

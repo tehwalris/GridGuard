@@ -1,10 +1,11 @@
 import { Box, createStyles, Grid } from "@mantine/core";
 import { selectRecentLoad, State } from "power-shared";
+import { colors } from "../colors";
 import LineChart from "../components/LineChart";
 import { RunAction } from "../useUnilog";
 import AdminCard from "./AdminCard";
 import AdminDeviceList from "./AdminDeviceList";
-import AdminBox from "./TextBox";
+import AdminNumberCard from "./AdminNumberCard";
 
 const useStyles = createStyles((theme, _params, getRef) => ({
   container: {
@@ -34,12 +35,28 @@ function AdminContent({ state, runAction }: Props) {
           </AdminCard>
           <Grid grow gutter="sm">
             <Grid.Col span={1} p={0}>
-              <AdminBox
-                content={"Current Usage: " + state.simulation.powerConsumption}
+              <AdminNumberCard
+                label={"Current Usage: "}
+                value={state.simulation.powerConsumption}
               />
             </Grid.Col>
             <Grid.Col span={1} p={0}>
-              <AdminBox content="URGENT:" />
+              <AdminNumberCard
+                label="Adjustments required"
+                backgroundColor={
+                  selectRecentLoad(state).slice(-1)[0] > 1.01
+                    ? colors.lightRed![0]
+                    : "white"
+                }
+                labelColor={
+                  selectRecentLoad(state).slice(-1)[0] > 1.01
+                    ? colors.red![0]
+                    : colors.primary1![0]
+                }
+                value={
+                  selectRecentLoad(state).slice(-1)[0] > 1.01 ? "URGENT" : "NO"
+                }
+              />
             </Grid.Col>
           </Grid>
         </Grid.Col>
