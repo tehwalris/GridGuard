@@ -32,7 +32,7 @@ function AdminContent({ state, runAction }: Props) {
       <Grid grow gutter="lg">
         <Grid.Col span={5} p={0}>
           <AdminCard>
-            <LineChart data={recentPowerConsumption} title="Network Load" />
+            <LineChart data={recentPowerConsumption} title="NETWORK LOAD" />
           </AdminCard>
           <Grid grow gutter="sm">
             <Grid.Col span={1} p={0}>

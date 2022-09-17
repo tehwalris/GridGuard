@@ -1,5 +1,4 @@
-import { Text } from "@mantine/core";
-import _ from "lodash";
+import { createStyles, Text } from "@mantine/core";
 import {
   VictoryAxis,
   VictoryChart,
@@ -12,10 +11,19 @@ interface Props {
   title: string;
 }
 
+const useStyles = createStyles((theme, _params, getRef) => ({
+  title: {
+    letterSpacing: 2,
+    fontWeight: 700,
+    color: theme.colors.primary1,
+  },
+}));
+
 function LineChart({ data, title }: Props) {
+  const { classes } = useStyles();
   return (
     <div>
-      <Text p="sm" size={30}>
+      <Text className={classes.title} p="sm" size={30}>
         {title}
       </Text>
       <VictoryChart
@@ -32,9 +40,7 @@ function LineChart({ data, title }: Props) {
             ticks: { stroke: "grey", size: 5 },
             tickLabels: { fontSize: 10, padding: 5 },
           }}
-          tickCount={3}
           dependentAxis
-          domain={[0, _.max(data) ?? 0]}
         />
         <VictoryScatter
           size={5}

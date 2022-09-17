@@ -18,6 +18,8 @@ const useStyles = createStyles((theme, _params, getRef) => ({
   title: {
     height: "100%",
     fontSize: 36,
+    fontWeight: 700,
+    letterSpacing: 2,
   },
 }));
 

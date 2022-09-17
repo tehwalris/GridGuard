@@ -1,4 +1,4 @@
-import { Button, createStyles, Stack, Text } from "@mantine/core";
+import { Button, createStyles, Group, Stack, Text } from "@mantine/core";
 import { ActionType, DeviceClassToggle } from "power-shared";
 import { useState } from "react";
 import { RunAction } from "../useUnilog";
@@ -7,6 +7,7 @@ import AdminDevice from "./AdminDevice";
 
 const useStyles = createStyles((theme, _params, getRef) => ({
   container: { height: "100%", width: "100%" },
+  title: { letterSpacing: 2, fontWeight: 700, color: theme.colors.primary1 },
 }));
 
 interface Props {
@@ -34,6 +35,8 @@ function AdminDeviceList({ toggles, runAction }: Props) {
     setDraftPowered({});
   };
 
+  const onReset = () => setDraftPowered({});
+
   const anyToggleChanged = toggles.some(
     (toggle) =>
       draftPowered[toggle.key] !== undefined &&
@@ -43,7 +46,9 @@ function AdminDeviceList({ toggles, runAction }: Props) {
   return (
     <AdminCard>
       <Stack p={0} className={classes.container}>
-        <Text size={30}>Devices</Text>{" "}
+        <Text className={classes.title} size={30}>
+          FILTERS
+        </Text>
         {toggles.map((toggle) => (
           <AdminDevice
             key={toggle.key}
@@ -56,9 +61,22 @@ function AdminDeviceList({ toggles, runAction }: Props) {
             }
           />
         ))}
-        <Button onClick={onApply} disabled={!anyToggleChanged}>
-          Apply
-        </Button>
+        <Group grow>
+          <Button
+            variant="outline"
+            onClick={onApply}
+            disabled={!anyToggleChanged}
+          >
+            APPLY
+          </Button>
+          <Button
+            variant="outline"
+            onClick={onReset}
+            disabled={!anyToggleChanged}
+          >
+            RESET
+          </Button>
+        </Group>
       </Stack>
     </AdminCard>
   );

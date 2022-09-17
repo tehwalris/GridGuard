@@ -5,7 +5,7 @@ const useStyles = createStyles((theme, _params, getRef) => ({
     height: "100%",
     width: "100%",
     fontSize: 20,
-    backgroundColor: theme.colors.accent1,
+    backgroundColor: "white",
     position: "relative",
   },
   triangle: {
@@ -15,7 +15,7 @@ const useStyles = createStyles((theme, _params, getRef) => ({
     width: 0,
     height: 0,
     borderTop: "20px solid transparent",
-    borderLeft: "15px solid " + theme.colors.accent1[0],
+    borderLeft: "15px solid white",
     borderBottom: "20px solid transparent",
   },
 }));
