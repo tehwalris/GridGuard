@@ -67,7 +67,7 @@ function LineChart({
             tickLabels: { fontSize: 10, padding: 5 },
           }}
           dependentAxis
-          tickFormat={(t) => t.toFixed(1)}
+          tickFormat={simple ? (t) => t.toFixed(1) : undefined}
           tickValues={simple ? [1.0] : undefined}
           domain={
             data.length

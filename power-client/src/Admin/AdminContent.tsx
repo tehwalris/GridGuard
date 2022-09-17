@@ -1,5 +1,6 @@
 import { Box, createStyles, Grid } from "@mantine/core";
 import { selectRecentLoad, State } from "power-shared";
+import { useState } from "react";
 import { colors } from "../colors";
 import LineChart from "../components/LineChart";
 import { RunAction } from "../useUnilog";
@@ -27,13 +28,34 @@ function AdminContent({ state, runAction }: Props) {
   const recentLoad = selectRecentLoad(state);
   const currentLoad = recentLoad.slice(-1)[0];
 
+  const [draftPowered, setDraftPowered] = useState<{ [key: string]: boolean }>(
+    {},
+  );
+
+  const potentialSavingsByClass =
+    state.simulation.powerConsumption.byDeviceClassWithoutSavings;
+
+  const toggles = state.toggles;
+
+  const totalConsumption = state.simulation.powerConsumption.total;
+
+  const potentialSave = toggles
+    .map((toggle) =>
+      draftPowered[toggle.key] !== undefined &&
+      toggle.powered !== draftPowered[toggle.key]
+        ? potentialSavingsByClass[toggle.key] *
+          Math.pow(-1, +draftPowered[toggle.key])
+        : 0,
+    )
+    .reduce((c, p) => c + p, 0);
+
   return (
     <Box p="md" className={classes.container}>
       <Grid grow gutter="lg">
         <Grid.Col span={4} p={0}>
           <AdminCard>
             <LineChart
-              predictedDifference={0.1}
+              predictedDifference={potentialSave / totalConsumption}
               data={recentLoad}
               title="NETWORK LOAD"
             />
@@ -42,9 +64,7 @@ function AdminContent({ state, runAction }: Props) {
             <Grid.Col span={1} p={0}>
               <AdminNumberCard
                 label={"Current Usage [MW] "}
-                value={Math.round(
-                  state.simulation.powerConsumption.total / 10e6,
-                )}
+                value={Math.round(totalConsumption / 10e6)}
               />
             </Grid.Col>
             <Grid.Col span={1} p={0}>
@@ -68,7 +88,12 @@ function AdminContent({ state, runAction }: Props) {
           </Grid>
         </Grid.Col>
         <Grid.Col span={1} p={0}>
-          <AdminDeviceList toggles={state.toggles} runAction={runAction} />
+          <AdminDeviceList
+            toggles={state.toggles}
+            runAction={runAction}
+            draftPowered={draftPowered}
+            setDraftPowered={setDraftPowered}
+          />
         </Grid.Col>
       </Grid>
     </Box>

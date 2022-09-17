@@ -1,6 +1,5 @@
 import { Button, createStyles, Group, Stack, Text } from "@mantine/core";
 import { ActionType, DeviceClassToggle } from "power-shared";
-import { useState } from "react";
 import { RunAction } from "../useUnilog";
 import AdminCard from "./AdminCard";
 import AdminDevice from "./AdminDevice";
@@ -13,14 +12,17 @@ const useStyles = createStyles((theme, _params, getRef) => ({
 interface Props {
   toggles: DeviceClassToggle[];
   runAction: RunAction;
+  draftPowered: { [key: string]: boolean };
+  setDraftPowered: (smth: any) => void;
 }
 
-function AdminDeviceList({ toggles, runAction }: Props) {
+function AdminDeviceList({
+  toggles,
+  runAction,
+  draftPowered,
+  setDraftPowered,
+}: Props) {
   const { classes } = useStyles();
-
-  const [draftPowered, setDraftPowered] = useState<{ [key: string]: boolean }>(
-    {},
-  );
 
   const onApply = () => {
     for (const toggle of toggles) {
@@ -57,7 +59,7 @@ function AdminDeviceList({ toggles, runAction }: Props) {
               powered: draftPowered[toggle.key] ?? toggle.powered,
             }}
             onPoweredChange={(v) =>
-              setDraftPowered((old) => ({ ...old, [toggle.key]: v }))
+              setDraftPowered((old: any) => ({ ...old, [toggle.key]: v }))
             }
           />
         ))}
