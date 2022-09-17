@@ -1,5 +1,6 @@
-import { createStyles, Stack } from "@mantine/core";
+import { Button, createStyles, Stack, Text } from "@mantine/core";
 import { RunAction } from "../useUnilog";
+import AdminCard from "./AdminCard";
 import AdminDevice, { Device } from "./AdminDevice";
 
 const useStyles = createStyles((theme, _params, getRef) => ({
@@ -15,12 +16,15 @@ function AdminDeviceList({ devices, runAction }: Props) {
   const { classes } = useStyles();
 
   return (
-    <Stack p="lg" className={classes.container}>
-      Devices
-      {devices.map((device) => (
-        <AdminDevice key={device.key} device={device} runAction={runAction} />
-      ))}
-    </Stack>
+    <AdminCard>
+      <Stack p={0} className={classes.container}>
+        <Text size={30}>Devices</Text>{" "}
+        {devices.map((device) => (
+          <AdminDevice key={device.key} device={device} runAction={runAction} />
+        ))}
+        <Button>Apply</Button>
+      </Stack>
+    </AdminCard>
   );
 }
 

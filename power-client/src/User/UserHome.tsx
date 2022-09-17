@@ -1,7 +1,9 @@
-import { Center, createStyles, Group, Stack } from "@mantine/core";
+import { Box, Center, createStyles, Group, Stack } from "@mantine/core";
 import { State } from "power-shared";
 import { Link } from "react-router-dom";
 import LineChart from "../components/LineChart";
+import UserCard from "../User/UserCard";
+import UserNumberBox from "./UserNumberBox";
 
 const useStyles = createStyles((theme, _params, getRef) => ({
   container: {
@@ -9,8 +11,7 @@ const useStyles = createStyles((theme, _params, getRef) => ({
     height: "100%",
   },
   border: { border: "1px solid black" },
-  imminent: { width: "100%", height: 60, border: "1px solid black" },
-  box: { height: 90, border: "1px solid black" },
+  imminent: { width: "100%", height: 20 },
 }));
 
 interface Props {
@@ -23,18 +24,26 @@ function UserContent({ state }: Props) {
     (h) => h.powerConsumption,
   );
   return (
-    <div className={classes.container}>
-      <Stack>
-        <LineChart data={recentPowerConsumption} />
-        <Center className={classes.imminent}>POWER OUTAGE IMMINENT!</Center>
+    <Box className={classes.container}>
+      <Stack spacing={15}>
+        <UserCard>
+          <LineChart data={recentPowerConsumption} title="Network Load" />
+        </UserCard>
+        <UserCard>
+          <Center className={classes.imminent}>OUTAGE IMMINENT!</Center>
+        </UserCard>
         <Group position="center" grow>
-          <Center className={classes.box}>Power saved: 1</Center>
-          <Link to="/user/details">
-            <Center className={classes.box}>Devices affected: 1</Center>
-          </Link>
+          <UserCard>
+            <UserNumberBox number={1} label="Power Saved" />
+          </UserCard>
+          <UserCard>
+            <Link to="/user/details">
+              <UserNumberBox number={2} label="Devices affected" />
+            </Link>
+          </UserCard>
         </Group>
       </Stack>
-    </div>
+    </Box>
   );
 }
 

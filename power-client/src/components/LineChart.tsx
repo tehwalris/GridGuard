@@ -1,7 +1,6 @@
-import React from "react";
 import {
-  VictoryChart,
   VictoryAxis,
+  VictoryChart,
   VictoryLine,
   VictoryScatter,
 } from "victory";
@@ -10,13 +9,14 @@ import { Text } from "@mantine/core";
 
 interface Props {
   data: number[];
+  title: string;
 }
 
-function LineChart({ data }: Props) {
+function LineChart({ data, title }: Props) {
   return (
-    <div style={{ border: "1px solid black" }}>
-      <Text p="lg" size={30}>
-        Title
+    <div>
+      <Text p="sm" size={30}>
+        {title}
       </Text>
       <VictoryChart
         // domainPadding will add space to each side of VictoryBar to
@@ -28,9 +28,9 @@ function LineChart({ data }: Props) {
           label="Power"
           style={{
             axis: { stroke: "none" },
-            axisLabel: { fontSize: 20, padding: 30 },
+            axisLabel: { fontSize: 15, padding: 30 },
             ticks: { stroke: "grey", size: 5 },
-            tickLabels: { fontSize: 15, padding: 5 },
+            tickLabels: { fontSize: 10, padding: 5 },
           }}
           tickCount={3}
           dependentAxis

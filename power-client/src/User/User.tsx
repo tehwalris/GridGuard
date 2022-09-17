@@ -10,9 +10,9 @@ interface Props {
 function User({ state }: Props) {
   return (
     <AppShell
-      padding="md"
+      padding={0}
       header={
-        <Header height={80} p="md">
+        <Header height={80}>
           <UserHeader />
         </Header>
       }

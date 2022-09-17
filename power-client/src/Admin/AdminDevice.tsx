@@ -1,8 +1,10 @@
-import { Switch } from "@mantine/core";
+import { createStyles, Group, Switch } from "@mantine/core";
 import { ActionType } from "power-shared";
-import React from "react";
 import { RunAction } from "../useUnilog";
 
+const useStyles = createStyles((theme, _params, getRef) => ({
+  container: { height: "100%", width: "100%" },
+}));
 export interface Device {
   key: string;
   powered: boolean;
@@ -14,8 +16,9 @@ interface Props {
 }
 
 function AdminDevice({ device, runAction }: Props) {
+  const { classes } = useStyles();
   return (
-    <div>
+    <Group className={classes.container} position="apart">
       {device.key}:
       <Switch
         checked={device.powered}
@@ -31,7 +34,7 @@ function AdminDevice({ device, runAction }: Props) {
         onLabel="ON"
         offLabel="OFF"
       />
-    </div>
+    </Group>
   );
 }
 

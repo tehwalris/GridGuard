@@ -1,5 +1,5 @@
 import { Center, createStyles } from "@mantine/core";
-import React from "react";
+import AdminCard from "./AdminCard";
 
 const useStyles = createStyles((theme, _params, getRef) => ({
   container: { height: 100, width: "100%", fontSize: 30 },
@@ -12,7 +12,11 @@ interface Props {
 function AdminBox({ content }: Props) {
   const { classes } = useStyles();
 
-  return <Center className={classes.container}>{content}</Center>;
+  return (
+    <AdminCard>
+      <Center className={classes.container}>{content}</Center>
+    </AdminCard>
+  );
 }
 
 export default AdminBox;

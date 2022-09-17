@@ -1,8 +1,9 @@
-import { AppShell, Header, Navbar, Text } from "@mantine/core";
+import { AppShell, Header, Navbar } from "@mantine/core";
 import { State } from "power-shared";
 import { RunAction } from "../useUnilog";
 import AdminContent from "./AdminContent";
 import AdminHeader from "./AdminHeader";
+import AdminNav from "./AdminNav";
 
 interface Props {
   state: State;
@@ -12,14 +13,14 @@ interface Props {
 function Admin({ state, runAction }: Props) {
   return (
     <AppShell
-      padding="md"
+      padding={0}
       navbar={
-        <Navbar p="md" width={{ base: 300 }}>
-          <Text>Application navbar</Text>
+        <Navbar withBorder={false} width={{ base: 300 }}>
+          <AdminNav />
         </Navbar>
       }
       header={
-        <Header height={120} p={0}>
+        <Header withBorder={false} height={120} p={0}>
           <AdminHeader />
         </Header>
       }

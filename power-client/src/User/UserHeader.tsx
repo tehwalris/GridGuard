@@ -1,4 +1,5 @@
 import {
+  Box,
   Burger,
   Center,
   createStyles,
@@ -6,8 +7,9 @@ import {
   Stack,
   Text,
 } from "@mantine/core";
-import React, { useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
+import { colors } from "../colors";
 
 const useStyles = createStyles((theme, _params, getRef) => ({
   container: {
@@ -16,6 +18,8 @@ const useStyles = createStyles((theme, _params, getRef) => ({
     alignItems: "center",
     width: "100%",
     height: "100%",
+    backgroundColor: theme.colors.primary1,
+    color: theme.colors.contrast1,
   },
 }));
 
@@ -24,8 +28,12 @@ function UserHeader() {
   const [opened, setOpened] = useState(false);
 
   return (
-    <div className={classes.container}>
-      <Burger opened={opened} onClick={() => setOpened((o) => !o)} />
+    <Box className={classes.container} p="md">
+      <Burger
+        opened={opened}
+        onClick={() => setOpened((o) => !o)}
+        color={colors.contrast1![0]}
+      />
       <Center p="md">
         <Text size={25}>Title</Text>
       </Center>
@@ -44,7 +52,7 @@ function UserHeader() {
           </Link>
         </Stack>
       </Drawer>
-    </div>
+    </Box>
   );
 }
 
