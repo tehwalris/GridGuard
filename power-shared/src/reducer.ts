@@ -20,7 +20,9 @@ function getPowerConsumption(
   const byDeviceClass: { [key: string]: number } = {};
   const temp = gridMeanPower * getBasePowerConsumptionFromTick(tick);
   for (const toggle of toggles) {
-    const thisDevice = toggle.powered ? temp * (1 - nonSmartRatio) : 0;
+    const thisDevice = toggle.powered
+      ? (temp * (1 - nonSmartRatio)) / toggles.length
+      : 0;
     byDeviceClass[toggle.key] = thisDevice;
     total += thisDevice;
   }
