@@ -13,7 +13,7 @@ interface Props {
 const useStyles = createStyles((theme, _params, getRef) => ({
   title: {
     letterSpacing: 2,
-    fontWeight: 700,
+    fontWeight: 800,
     color: theme.colors.primary1,
   },
 }));
@@ -53,7 +53,7 @@ function LineChart({
 
   return (
     <div>
-      <Text className={classes.title} p="sm" size={30}>
+      <Text className={classes.title} p="sm" pt={0} size={26}>
         {title}
       </Text>
       <VictoryChart domainPadding={20} height={260}>

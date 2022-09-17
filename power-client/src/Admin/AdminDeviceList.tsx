@@ -6,7 +6,7 @@ import AdminDevice from "./AdminDevice";
 
 const useStyles = createStyles((theme, _params, getRef) => ({
   container: { height: "100%", width: "100%" },
-  title: { letterSpacing: 2, fontWeight: 700, color: theme.colors.primary1 },
+  title: { letterSpacing: 2, fontWeight: 800, color: theme.colors.primary1 },
 }));
 
 interface Props {

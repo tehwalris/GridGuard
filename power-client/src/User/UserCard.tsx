@@ -9,7 +9,7 @@ const useStyles = createStyles(
     container: {
       backgroundColor: backgroundColor || "white",
       borderRadius: 20,
-      flexGrow: 1,
+      boxShadow: "0px 0px 5px " + theme.colors.contrast2[0],
     },
   }),
 );

@@ -21,19 +21,20 @@ const useStyles = createStyles(
     imminent: {
       width: "100%",
       color,
-      fontWeight: 700,
+      fontWeight: 800,
       letterSpacing: 2,
     },
     title: {
       fontSize: 20,
       color: theme.colors.primary1,
       letterSpacing: 2,
-      fontWeight: 700,
+      fontWeight: 800,
     },
     subtitle: {
       fontSize: 13,
       color: theme.colors.contrast2,
       fontWeight: 400,
+      letterSpacing: "normal",
     },
     leftBorder: {
       position: "absolute",
@@ -42,6 +43,7 @@ const useStyles = createStyles(
       height: "100%",
       width: 20,
       background: "white",
+      boxShadow: "0px 0px 5px " + theme.colors.contrast2[0],
     },
   }),
 );
@@ -72,9 +74,9 @@ function UserContent({ state, userId }: Props) {
       <Text className={classes.subtitle} pb="sm">
         This is an overview of the current grid situation
       </Text>
-      <Stack spacing={15}>
+      <Stack spacing={20}>
         <UserCard>
-          <LineChart data={recentLoad} title="Network Load" simple={true} />
+          <LineChart data={recentLoad} title="NETWORK LOAD" simple={true} />
         </UserCard>
         <UserCard backgroundColor={lastLoadBad ? colors.lightRed![0] : "white"}>
           <Center className={classes.imminent}>
@@ -88,7 +90,7 @@ function UserContent({ state, userId }: Props) {
             </Stack>
           </Center>
         </UserCard>
-        <Group position="apart" grow>
+        <Group position="apart">
           <UserCard>
             <UserNumberBox number={1} label="Power Saved" />
           </UserCard>

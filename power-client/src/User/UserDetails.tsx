@@ -24,7 +24,7 @@ const useStyles = createStyles((theme, _params, getRef) => ({
     fontSize: 20,
     color: theme.colors.primary1,
     letterSpacing: 2,
-    fontWeight: 700,
+    fontWeight: 800,
   },
 }));
 

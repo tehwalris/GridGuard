@@ -6,9 +6,10 @@ const useStyles = createStyles((theme, params, getRef) => ({
     fontSize: 30,
     color: theme.colors.primary1[0],
     textDecoration: "none !important",
+    fontWeight: 800,
   },
   label: {
-    fontSize: 12,
+    fontSize: 14,
     color: theme.colors.contrast2[0],
     textDecoration: "none",
   },
@@ -23,7 +24,7 @@ function UserNumberBox({ number, label }: Props) {
 
   return (
     <Center className={classes.container}>
-      <Stack>
+      <Stack spacing={0}>
         <Center className={classes.number}>{number}</Center>
         <Center className={classes.label}>{label}</Center>
       </Stack>

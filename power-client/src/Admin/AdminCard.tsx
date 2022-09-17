@@ -10,6 +10,7 @@ const useStyles = createStyles(
       backgroundColor: backgroundColor || "white",
       borderRadius: 20,
       margin: 20,
+      boxShadow: "0px 0px 5px " + theme.colors.contrast2[0],
     },
   }),
 );

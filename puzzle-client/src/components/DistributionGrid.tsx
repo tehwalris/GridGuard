@@ -1,6 +1,6 @@
+import { GridSize } from "puzzle-shared";
 import React, { useMemo } from "react";
 import { useResizeDetector } from "react-resize-detector";
-import { GridSize } from "puzzle-shared";
 import GridShowerCell from "./GridShowerCell";
 
 interface Props {
@@ -62,7 +62,7 @@ const styles = {
     display: "flex",
     flexWrap: "wrap",
     width: "100%",
-    maxWidth: "700px",
+    maxWidth: "800px",
     height: "100%",
     overflow: "hidden",
     alignContent: "flex-start",
