@@ -36,8 +36,8 @@ function AdminContent({ state, runAction }: Props) {
           <Grid grow gutter="sm">
             <Grid.Col span={1} p={0}>
               <AdminNumberCard
-                label={"Current Usage: "}
-                value={state.simulation.powerConsumption}
+                label={"Current Usage [MW] "}
+                value={Math.round(state.simulation.powerConsumption / 10e6)}
               />
             </Grid.Col>
             <Grid.Col span={1} p={0}>

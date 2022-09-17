@@ -15,7 +15,8 @@ const gridMeanPower = gridYearlyEnergy / (365 * 24); // W
 function getPowerConsumption(tick: number, toggles: State["toggles"]): number {
   const poweredToggles = countPoweredToggles(toggles);
   return (
-    (gridMeanPower * getBasePowerConsumptionFromTick(tick)) /
+    gridMeanPower *
+    getBasePowerConsumptionFromTick(tick) *
     (((1 - nonSmartRatio) * poweredToggles) / toggles.length + nonSmartRatio)
   );
 }
