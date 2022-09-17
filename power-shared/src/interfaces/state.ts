@@ -27,6 +27,7 @@ export interface SimulationState {
 
 export interface GridPowerConsumption {
   total: number;
+  totalWithoutSavings: number;
   byDeviceClass: { [key: string]: number | undefined };
   byDeviceClassWithoutSavings: { [key: string]: number | undefined };
 }

@@ -1,4 +1,4 @@
-import { current, original, produce } from "immer";
+import { original, produce } from "immer";
 import _ from "lodash";
 import Prando from "prando";
 import R from "ramda";
@@ -19,6 +19,7 @@ export function getPowerConsumption(
   devices: Device[],
 ): GridPowerConsumption {
   let total = 0;
+  let totalWithoutSavings = 0;
   const byDeviceClass: { [key: string]: number | undefined } = {};
   const byDeviceClassWithoutSavings: { [key: string]: number | undefined } = {};
   for (const deviceClassKey of allDeviceClassKeys) {
@@ -28,15 +29,22 @@ export function getPowerConsumption(
 
   const temp = gridMeanPower * getBasePowerConsumptionFromTick(tick);
   total += temp * nonSmartRatio;
+  totalWithoutSavings += temp * nonSmartRatio;
 
   for (const device of devices) {
     total += device.powerConsumption;
+    totalWithoutSavings += device.powerConsumptionWithoutSavings;
     byDeviceClass[device.deviceClassKey]! += device.powerConsumption;
     byDeviceClassWithoutSavings[device.deviceClassKey]! +=
       device.powerConsumptionWithoutSavings;
   }
 
-  return { total, byDeviceClass, byDeviceClassWithoutSavings };
+  return {
+    total,
+    totalWithoutSavings,
+    byDeviceClass,
+    byDeviceClassWithoutSavings,
+  };
 }
 
 function getBasePowerConsumptionFromTick(tick: number): number {
@@ -155,12 +163,6 @@ export const reducer = (_state: State, action: Action): State =>
         for (const toggle of state.toggles) {
           if (toggle.key === action.key) {
             toggle.powered = action.powered;
-            console.log(
-              "DEBUG",
-              action.powered,
-              current(toggle),
-              current(state.toggles),
-            );
             return;
           }
         }
@@ -184,6 +186,11 @@ export const reducer = (_state: State, action: Action): State =>
         }
         state.devices = action.devices;
         state.deviceIndicesById = makeDeviceIndicesById(action.devices);
+        state.meanProduction = _.mean(
+          state.simulationHistory.map(
+            (v) => v.powerConsumption.totalWithoutSavings,
+          ),
+        );
         state.simulationHistory.shift();
         state.simulationHistory.push(
           _.cloneDeep(original(state.simulation) ?? state.simulation),

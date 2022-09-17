@@ -254,7 +254,7 @@ class SometimesOnDeviceClient extends DeviceClient {
 
   async onMessage(msg: PreferenceDeviceServerMessage): Promise<void> {
     this.latestAllowPowered = msg.allowPowered;
-    // await sleep(Math.random() * 1000);
+    await sleep(Math.max(0, randomNormal() + 1) * 8000);
     this.autoSetPowered();
   }
 
