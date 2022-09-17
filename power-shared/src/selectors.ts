@@ -1,9 +1,14 @@
-import { SimulationState, State } from "./interfaces/state";
+import { SimulationState, State, User } from "./interfaces/state";
 
 export interface DeviceSimulationState {
   id: string;
   powered: boolean;
   powerConsumption: number;
+}
+
+export function selectUser(state: State, userId: string): User | undefined {
+  const users = state.users;
+  return users.find((u) => u.id === userId);
 }
 
 export function selectDeviceSimulationState(
