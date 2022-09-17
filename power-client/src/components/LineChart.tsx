@@ -1,4 +1,5 @@
 import { createStyles, Text } from "@mantine/core";
+import _ from "lodash";
 import {
   VictoryAxis,
   VictoryChart,
@@ -34,7 +35,7 @@ function LineChart({ data, title }: Props) {
       >
         <VictoryAxis />
         <VictoryAxis
-          label="Power"
+          label="Load"
           style={{
             axis: { stroke: "none" },
             axisLabel: { fontSize: 15, padding: 30 },
@@ -42,6 +43,11 @@ function LineChart({ data, title }: Props) {
             tickLabels: { fontSize: 10, padding: 5 },
           }}
           dependentAxis
+          domain={
+            data.length
+              ? [Math.min(0.98, _.min(data)!), Math.max(1.02, _.max(data)!)]
+              : undefined
+          }
         />
 
         <VictoryLine data={data} />

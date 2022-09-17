@@ -1,4 +1,4 @@
-import { State } from "./interfaces/state";
+import { SimulationState, State } from "./interfaces/state";
 
 export interface DeviceSimulationState {
   id: string;
@@ -29,4 +29,12 @@ export function selectDeviceSimulationState(
     powered,
     powerConsumption,
   };
+}
+
+export function selectLoad(simulationState: SimulationState): number {
+  return simulationState.powerConsumption / simulationState.powerProduction;
+}
+
+export function selectRecentLoad(state: State): number[] {
+  return state.simulationHistory.map(selectLoad);
 }

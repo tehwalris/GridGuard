@@ -1,5 +1,5 @@
 import { Box, Center, createStyles, Group, Stack } from "@mantine/core";
-import { State } from "power-shared";
+import { selectRecentLoad, State } from "power-shared";
 import { Link } from "react-router-dom";
 import LineChart from "../components/LineChart";
 import UserCard from "../User/UserCard";
@@ -20,14 +20,14 @@ interface Props {
 
 function UserContent({ state }: Props) {
   const { classes } = useStyles();
-  const recentPowerConsumption = state.simulationHistory.map(
-    (h) => h.powerConsumption,
-  );
+
+  const recentLoad = selectRecentLoad(state);
+
   return (
     <Box className={classes.container}>
       <Stack spacing={15}>
         <UserCard>
-          <LineChart data={recentPowerConsumption} title="Network Load" />
+          <LineChart data={recentLoad} title="Network Load" />
         </UserCard>
         <UserCard>
           <Center className={classes.imminent}>OUTAGE IMMINENT!</Center>

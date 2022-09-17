@@ -7,17 +7,26 @@ import { unreachable } from "./util";
 const historySize = 20;
 export const tickMillis = 500;
 
+const nonSmartRatio = 0.3;
+
+const gridYearlyEnergy = 58.1 * 1e9 * 1000; // Wh
+const gridMeanPower = gridYearlyEnergy / (365 * 24); // W
+
 function getPowerConsumption(tick: number, toggles: State["toggles"]): number {
   const poweredToggles = countPoweredToggles(toggles);
-  return getBasePowerConsumptionFromTick(tick) * (poweredToggles + 8);
+  return (
+    gridMeanPower *
+    getBasePowerConsumptionFromTick(tick) *
+    (((1 - nonSmartRatio) * poweredToggles) / toggles.length + nonSmartRatio)
+  );
 }
 
 function getBasePowerConsumptionFromTick(tick: number): number {
-  return 1000 + Math.sin(tick / 3) * 100;
+  return 1 + 0.005 * Math.sin(tick / 3 + 0.2 * Math.sin(tick));
 }
 
 function getPowerProduction(tick: number, meanProduction: number): number {
-  return meanProduction * (1 + 0.05 * Math.sin((tick + 2) / 2.5));
+  return meanProduction * (1 + 0.005 * Math.sin((tick + 2) / 2.5));
 }
 
 function countPoweredToggles(toggles: State["toggles"]): number {
@@ -32,9 +41,8 @@ export function makeInitialState(): State {
     "oven",
     "light",
     "heater",
-  ].map((key, i) => ({ key, powered: (i + 1) % 3 !== 0 }));
-  const poweredToggles = countPoweredToggles(toggles);
-  const meanProduction = (poweredToggles + 0.2) * 1000;
+  ].map((key, i) => ({ key, powered: true }));
+  const meanProduction = gridMeanPower;
   return {
     users: [],
     meanProduction,

@@ -1,5 +1,5 @@
 import { Box, createStyles, Grid } from "@mantine/core";
-import { State } from "power-shared";
+import { selectRecentLoad, State } from "power-shared";
 import LineChart from "../components/LineChart";
 import { RunAction } from "../useUnilog";
 import AdminCard from "./AdminCard";
@@ -23,16 +23,14 @@ interface Props {
 function AdminContent({ state, runAction }: Props) {
   const { classes } = useStyles();
 
-  const recentPowerConsumption = state.simulationHistory.map(
-    (h) => h.powerConsumption,
-  );
+  const recentLoad = selectRecentLoad(state);
 
   return (
     <Box p="md" className={classes.container}>
       <Grid grow gutter="lg">
         <Grid.Col span={5} p={0}>
           <AdminCard>
-            <LineChart data={recentPowerConsumption} title="NETWORK LOAD" />
+            <LineChart data={recentLoad} title="NETWORK LOAD" />
           </AdminCard>
           <Grid grow gutter="sm">
             <Grid.Col span={1} p={0}>
