@@ -38,9 +38,15 @@ function getBasePowerConsumptionFromTick(tick: number): number {
   );
 }
 
-function getPowerProduction(tick: number, meanProduction: number): number {
+function getPowerProduction(
+  tick: number,
+  meanProduction: number,
+  eventOngoing: boolean,
+): number {
   return (
-    meanProduction * (1 + 0.005 * Math.sin((tick + 2) / 2.5)) +
+    (eventOngoing ? 0.95 : 1) *
+      meanProduction *
+      (1 + 0.005 * Math.sin((tick + 2) / 2.5)) +
     Math.random() / 100
   );
 }
@@ -93,13 +99,14 @@ export function makeInitialState(): State {
     simulation: {
       tick: historySize,
       powerConsumption: getPowerConsumption(historySize, toggles),
-      powerProduction: getPowerProduction(historySize, meanProduction),
+      powerProduction: getPowerProduction(historySize, meanProduction, false),
     },
     simulationHistory: _.times(historySize, (i) => ({
       tick: i,
       powerConsumption: getPowerConsumption(i, toggles),
-      powerProduction: getPowerProduction(i, meanProduction),
+      powerProduction: getPowerProduction(i, meanProduction, false),
     })),
+    eventOngoing: false,
   };
 }
 
@@ -142,11 +149,22 @@ export const reducer = (_state: State, action: Action): State =>
         throw new Error(`toggle does not exist: ${action.key}`);
       }
       case ActionType.StartEvent: {
-        state.simulation.powerProduction *= 0.95;
+        state.eventOngoing = true;
+        state.simulation.powerProduction = getPowerProduction(
+          historySize,
+          state.meanProduction,
+          true,
+        );
+
         break;
       }
       case ActionType.EndEvent: {
-        state.simulation.powerProduction /= 0.95;
+        state.eventOngoing = false;
+        state.simulation.powerProduction = getPowerProduction(
+          historySize,
+          state.meanProduction,
+          false,
+        );
         break;
       }
       case ActionType.TickSimulation: {
