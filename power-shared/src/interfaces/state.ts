@@ -1,5 +1,3 @@
-export type DateNumber = number; // milliseconds, to pass to new Date(...)
-
 export interface State {
   users: User[];
   toggles: DeviceClassToggle[];

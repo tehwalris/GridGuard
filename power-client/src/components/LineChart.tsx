@@ -1,11 +1,11 @@
+import { Text } from "@mantine/core";
+import _ from "lodash";
 import {
   VictoryAxis,
   VictoryChart,
   VictoryLine,
   VictoryScatter,
 } from "victory";
-
-import { Text } from "@mantine/core";
 
 interface Props {
   data: number[];
@@ -34,6 +34,7 @@ function LineChart({ data, title }: Props) {
           }}
           tickCount={3}
           dependentAxis
+          domain={[0, _.max(data) ?? 0]}
         />
         <VictoryScatter
           size={5}
