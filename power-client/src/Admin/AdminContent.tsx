@@ -25,6 +25,7 @@ function AdminContent({ state, runAction }: Props) {
   const { classes } = useStyles();
 
   const recentLoad = selectRecentLoad(state);
+  const currentLoad = recentLoad.slice(-1)[0];
 
   return (
     <Box p="md" className={classes.container}>
@@ -48,17 +49,17 @@ function AdminContent({ state, runAction }: Props) {
               <AdminNumberCard
                 label="Adjustments required"
                 backgroundColor={
-                  selectRecentLoad(state).slice(-1)[0] > 1.01
+                  currentLoad > 1.01 || currentLoad < 0.99
                     ? colors.lightRed![0]
                     : "white"
                 }
                 labelColor={
-                  selectRecentLoad(state).slice(-1)[0] > 1.01
+                  currentLoad > 1.01 || currentLoad < 0.99
                     ? colors.red![0]
                     : colors.primary1![0]
                 }
                 value={
-                  selectRecentLoad(state).slice(-1)[0] > 1.01 ? "URGENT" : "NO"
+                  currentLoad > 1.01 || currentLoad < 0.99 ? "URGENT" : "NO"
                 }
               />
             </Grid.Col>

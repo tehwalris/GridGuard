@@ -7,7 +7,7 @@ import { unreachable } from "./util";
 const historySize = 20;
 export const tickMillis = 500;
 
-const nonSmartRatio = 0.3;
+const nonSmartRatio = 0.8;
 
 const gridYearlyEnergy = 58.1 * 1e9 * 1000; // Wh
 const gridMeanPower = gridYearlyEnergy / (365 * 24); // W
@@ -22,11 +22,16 @@ function getPowerConsumption(tick: number, toggles: State["toggles"]): number {
 }
 
 function getBasePowerConsumptionFromTick(tick: number): number {
-  return 1 + 0.005 * Math.sin(tick / 3 + 0.2 * Math.sin(tick));
+  return (
+    1 + 0.005 * Math.sin(tick / 3 + 0.2 * Math.sin(tick)) + Math.random() / 100
+  );
 }
 
 function getPowerProduction(tick: number, meanProduction: number): number {
-  return meanProduction * (1 + 0.005 * Math.sin((tick + 2) / 2.5));
+  return (
+    meanProduction * (1 + 0.005 * Math.sin((tick + 2) / 2.5)) +
+    Math.random() / 100
+  );
 }
 
 function countPoweredToggles(toggles: State["toggles"]): number {
@@ -101,6 +106,14 @@ export const reducer = (_state: State, action: Action): State =>
           }
         }
         throw new Error(`toggle does not exist: ${action.key}`);
+      }
+      case ActionType.StartEvent: {
+        state.simulation.powerProduction *= 0.95;
+        break;
+      }
+      case ActionType.EndEvent: {
+        state.simulation.powerProduction /= 0.95;
+        break;
       }
       case ActionType.TickSimulation: {
         state.simulationHistory.shift();

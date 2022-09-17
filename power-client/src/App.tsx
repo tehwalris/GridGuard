@@ -1,4 +1,5 @@
-import { MantineProvider } from "@mantine/core";
+import { Button, MantineProvider } from "@mantine/core";
+import { ActionType } from "power-shared";
 import { BrowserRouter, Link, Route, Routes } from "react-router-dom";
 import Admin from "./Admin/Admin";
 import { colors } from "./colors";
@@ -37,14 +38,34 @@ function App() {
           <Route
             path="/"
             element={
-              <ul>
-                <li>
-                  <Link to="/user">User</Link>
-                </li>
-                <li>
-                  <Link to="/admin">Admin</Link>
-                </li>
-              </ul>
+              <>
+                <ul>
+                  <li>
+                    <Link to="/user">User</Link>
+                  </li>
+                  <li>
+                    <Link to="/admin">Admin</Link>
+                  </li>
+                </ul>
+                <Button
+                  onClick={() =>
+                    runAction(() => {
+                      return { type: ActionType.StartEvent };
+                    })
+                  }
+                >
+                  Start Event
+                </Button>
+                <Button
+                  onClick={() =>
+                    runAction(() => {
+                      return { type: ActionType.EndEvent };
+                    })
+                  }
+                >
+                  End Event
+                </Button>
+              </>
             }
           />
         </Routes>
