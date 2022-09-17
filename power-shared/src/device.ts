@@ -108,11 +108,19 @@ export class DeviceServer {
       if (!toggle) {
         continue;
       }
+      const lastToggle = this.lastTogglesByDeviceClassKey.get(
+        device.deviceClassKey,
+      );
+      if (lastToggle && toggle.powered === lastToggle.powered) {
+        continue;
+      }
       client.onMessage({
         type: MessageType.PreferenceDeviceServer,
         allowPowered: toggle.powered,
       });
     }
+
+    this.lastTogglesByDeviceClassKey = toggleByDeviceClassKey;
   }
 }
 
@@ -236,7 +244,7 @@ class SometimesOnDeviceClient extends DeviceClient {
 
   async onMessage(msg: PreferenceDeviceServerMessage): Promise<void> {
     this.latestAllowPowered = msg.allowPowered;
-    await sleep(Math.random() * 5000);
+    // await sleep(Math.random() * 1000);
     this.autoSetPowered();
   }
 
