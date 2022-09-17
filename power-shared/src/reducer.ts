@@ -95,7 +95,6 @@ export function makeInitialState(): State {
     key,
     powered: true,
   }));
-  console.log("DEBUG toggles", toggles);
 
   const prando = new Prando();
   const devices: Device[] = [];

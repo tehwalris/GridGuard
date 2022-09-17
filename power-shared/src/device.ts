@@ -1,4 +1,5 @@
 import _ from "lodash";
+import randomNormal from "random-normal";
 import { v4 as genUuid } from "uuid";
 import {
   DeviceClientMessage,
@@ -193,18 +194,86 @@ class LegacyDeviceClient extends DeviceClient {
   }
 }
 
+class SometimesOnDeviceClient extends DeviceClient {
+  private latestAllowPowered = true;
+  private wantsToBePowered = false;
+
+  constructor(
+    private deviceId: string,
+    private deviceClassKey: string,
+    private typicalPowerConsumption: number,
+    private typicalOnTime: number,
+    private typicalOffTime: number,
+  ) {
+    super();
+  }
+
+  protected async run(): Promise<void> {
+    this.sendMessage?.({
+      type: MessageType.CreateDeviceClient,
+      deviceId: this.deviceId,
+      deviceClassKey: this.deviceClassKey,
+    });
+    const initiallyPowered =
+      Math.random() <
+      this.typicalOnTime / (this.typicalOnTime + this.typicalOffTime);
+    this.wantsToBePowered = initiallyPowered;
+    this.autoSetPowered();
+    if (initiallyPowered) {
+      await sleep(this.noisyTime(this.typicalOnTime));
+      this.wantsToBePowered = false;
+      this.autoSetPowered();
+    }
+    while (!this.isStopped()) {
+      await sleep(this.noisyTime(this.typicalOffTime));
+      this.wantsToBePowered = true;
+      this.autoSetPowered();
+      await sleep(this.noisyTime(this.typicalOnTime));
+      this.wantsToBePowered = false;
+      this.autoSetPowered();
+    }
+  }
+
+  async onMessage(msg: PreferenceDeviceServerMessage): Promise<void> {
+    this.latestAllowPowered = msg.allowPowered;
+    await sleep(Math.random() * 5000);
+    this.autoSetPowered();
+  }
+
+  private setPowered(powered: boolean) {
+    this.sendMessage?.({
+      type: MessageType.ReportDeviceClient,
+      powerConsumption: powered ? this.typicalPowerConsumption : 0,
+      powerConsumptionWithoutSavings: this.wantsToBePowered
+        ? this.typicalPowerConsumption
+        : 0,
+    });
+  }
+
+  private autoSetPowered() {
+    this.setPowered(this.wantsToBePowered && this.latestAllowPowered);
+  }
+
+  private noisyTime(time: number): number {
+    return Math.max(0, randomNormal() * 0.5 + 1) * time;
+  }
+}
+
 export function createVirtualDevices(deviceCount: number): DeviceClient[] {
   // TODO HACK need to scale this down to realistic values and scale up somewhere else
   const targetPower = gridMeanPower * (1 - nonSmartRatio);
-  return _.times(
-    deviceCount,
-    () =>
-      new LegacyDeviceClient(
-        genUuid(),
-        allDeviceClassKeysSorted[
-          Math.floor(Math.random() * allDeviceClassKeysSorted.length)
-        ],
-        targetPower / deviceCount,
-      ),
-  );
+  return _.times(deviceCount, () => {
+    const typicalOnTime = 10000;
+    const typicalOffTime = 40000;
+    const dutyCycle = typicalOnTime / (typicalOnTime + typicalOffTime);
+    return new SometimesOnDeviceClient(
+      genUuid(),
+      allDeviceClassKeysSorted[
+        Math.floor(Math.random() * allDeviceClassKeysSorted.length)
+      ],
+      targetPower / deviceCount / dutyCycle,
+      typicalOnTime,
+      typicalOffTime,
+    );
+  });
 }

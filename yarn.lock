@@ -2541,6 +2541,11 @@
   dependencies:
     ts-toolbelt "^6.15.1"
 
+"@types/random-normal@^1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@types/random-normal/-/random-normal-1.0.1.tgz#bd997f7e44192fb9bf20641648662c5b1a573ae4"
+  integrity sha512-l9/NTjcz3gK0YV/qrAgV2UwHN9qwISEIDN9MpBrEBYjII6lNsO5Viw/rznd47vR2WtpT4SFX4dlY69AwLcWtKQ==
+
 "@types/range-parser@*":
   version "1.2.4"
   resolved "https://registry.yarnpkg.com/@types/range-parser/-/range-parser-1.2.4.tgz#cd667bcfdd025213aafb7ca5915a932590acdcdc"
@@ -7270,7 +7275,7 @@ nwsapi@^2.2.0:
   resolved "https://registry.yarnpkg.com/nwsapi/-/nwsapi-2.2.2.tgz#e5418863e7905df67d51ec95938d67bf801f0bb0"
   integrity sha512-90yv+6538zuvUMnN+zCr8LuV6bPFdq50304114vJYJ8RDyK8D5O9Phpbd6SZWgI7PwzmmfN1upeOJlvybDSgCw==
 
-object-assign@^4, object-assign@^4.1.1:
+object-assign@^4, object-assign@^4.0.1, object-assign@^4.1.1:
   version "4.1.1"
   resolved "https://registry.yarnpkg.com/object-assign/-/object-assign-4.1.1.tgz#2109adc7965887cfc05cbbd442cac8bfbb360863"
   integrity sha512-rJgTQnkUnH1sFw8yT6VSU3zD3sWmu6sZhIseY8VX+GRu3P6F7Fu+JNDoXfklElbLJSnc3FUQHVe4cU5hj+BcUg==
@@ -8287,6 +8292,13 @@ ramda@^0.28.0:
   version "0.28.0"
   resolved "https://registry.yarnpkg.com/ramda/-/ramda-0.28.0.tgz#acd785690100337e8b063cab3470019be427cc97"
   integrity sha512-9QnLuG/kPVgWvMQ4aODhsBUFKOUmnbUnsSXACv+NCQZcHbeb+v8Lodp8OVxtRULN1/xOyYLLaL6npE6dMq5QTA==
+
+random-normal@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/random-normal/-/random-normal-1.0.0.tgz#daa0b5fa4caeb15968178338f2ac52e63a6e4689"
+  integrity sha512-aursKdfpfdHPpnabQVx6OUiuFpaBLl+6A/8k9u+ApMspjW2EIhZFjX8hNH9LZjpDyo0aTDfBCIgLWQXrsRhd2Q==
+  dependencies:
+    object-assign "^4.0.1"
 
 randombytes@^2.1.0:
   version "2.1.0"

@@ -78,7 +78,7 @@ class Lobby {
     this.stop();
     this.tickHandle = setInterval(this.onTick, tickMillis);
     this.deviceServer = new DeviceServer();
-    for (const deviceClient of createVirtualDevices(100)) {
+    for (const deviceClient of createVirtualDevices(1000)) {
       this.deviceServer.addClient(deviceClient);
     }
   }
