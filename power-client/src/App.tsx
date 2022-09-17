@@ -1,8 +1,8 @@
-import { Button, MantineProvider } from "@mantine/core";
-import { ActionType } from "power-shared";
+import { MantineProvider } from "@mantine/core";
 import { BrowserRouter, Link, Route, Routes } from "react-router-dom";
 import Admin from "./Admin/Admin";
 import { colors } from "./colors";
+import Event from "./Event/Event";
 import User from "./User/User";
 import { useUnilog } from "./useUnilog";
 import Visualization from "./Visualization/Visualization";
@@ -37,6 +37,7 @@ function App() {
             element={<User state={state} userId={userId!} />}
           />
           <Route path="visualization/*" element={<Visualization />} />
+          <Route path="event/*" element={<Event runAction={runAction} />} />
           <Route
             path="/"
             element={
@@ -49,24 +50,6 @@ function App() {
                     <Link to="/admin">Admin</Link>
                   </li>
                 </ul>
-                <Button
-                  onClick={() =>
-                    runAction(() => {
-                      return { type: ActionType.StartEvent };
-                    })
-                  }
-                >
-                  Start Event
-                </Button>
-                <Button
-                  onClick={() =>
-                    runAction(() => {
-                      return { type: ActionType.EndEvent };
-                    })
-                  }
-                >
-                  End Event
-                </Button>
               </>
             }
           />

@@ -40,7 +40,7 @@ for (let i = 0; i < n; i++) {
   devices[i].coords = alpha.map((e) => (0.5 + e * (i + 1)) % 1);
 }
 
-function UserCard() {
+function Visualization() {
   const { classes } = useStyles();
   const { height, width } = useWindowDimensions();
 
@@ -62,4 +62,4 @@ function UserCard() {
   );
 }
 
-export default UserCard;
+export default Visualization;
