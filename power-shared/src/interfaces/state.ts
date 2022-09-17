@@ -1,5 +1,6 @@
 export interface State {
   users: User[];
+  meanProduction: number;
   toggles: DeviceClassToggle[];
   simulation: SimulationState;
   simulationHistory: SimulationState[];
@@ -18,6 +19,7 @@ export interface DeviceClassToggle {
 export interface SimulationState {
   tick: number;
   powerConsumption: number;
+  powerProduction: number;
 }
 
 export interface Device {

@@ -7,8 +7,17 @@ import { unreachable } from "./util";
 const historySize = 20;
 export const tickMillis = 500;
 
-function getBasePowerFromTick(tick: number): number {
-  return 1000 + Math.sin(tick) * 100;
+function getPowerConsumption(tick: number, toggles: State["toggles"]): number {
+  const poweredToggles = countPoweredToggles(toggles);
+  return getBasePowerConsumptionFromTick(tick) * (poweredToggles + 8);
+}
+
+function getBasePowerConsumptionFromTick(tick: number): number {
+  return 1000 + Math.sin(tick / 3) * 100;
+}
+
+function getPowerProduction(tick: number, meanProduction: number): number {
+  return meanProduction * (1 + 0.05 * Math.sin((tick + 2) / 2.5));
 }
 
 function countPoweredToggles(toggles: State["toggles"]): number {
@@ -25,16 +34,20 @@ export function makeInitialState(): State {
     "heater",
   ].map((key, i) => ({ key, powered: (i + 1) % 3 !== 0 }));
   const poweredToggles = countPoweredToggles(toggles);
+  const meanProduction = (poweredToggles + 0.2) * 1000;
   return {
     users: [],
+    meanProduction,
     toggles,
     simulation: {
       tick: historySize,
-      powerConsumption: getBasePowerFromTick(historySize) * poweredToggles,
+      powerConsumption: getPowerConsumption(historySize, toggles),
+      powerProduction: getPowerProduction(historySize, meanProduction),
     },
     simulationHistory: _.times(historySize, (i) => ({
       tick: i,
-      powerConsumption: getBasePowerFromTick(i) * poweredToggles,
+      powerConsumption: getPowerConsumption(i, toggles),
+      powerProduction: getPowerProduction(i, meanProduction),
     })),
   };
 }
@@ -88,8 +101,10 @@ export const reducer = (_state: State, action: Action): State =>
         );
         state.simulation.tick++;
         const poweredToggles = countPoweredToggles(state.toggles);
-        state.simulation.powerConsumption =
-          getBasePowerFromTick(state.simulation.tick) * poweredToggles;
+        state.simulation.powerConsumption = getPowerConsumption(
+          state.simulation.tick,
+          state.toggles,
+        );
         break;
       }
       default: {
