@@ -5,6 +5,7 @@ import {
   VictoryLine,
   VictoryScatter,
 } from "victory";
+import { colors } from "../colors";
 
 interface Props {
   data: number[];
@@ -42,12 +43,13 @@ function LineChart({ data, title }: Props) {
           }}
           dependentAxis
         />
+
+        <VictoryLine data={data} />
         <VictoryScatter
           size={5}
-          style={{ data: { fill: "tomato" } }}
+          style={{ data: { fill: colors.red![0] } }}
           data={data}
         />
-        <VictoryLine data={data} />
       </VictoryChart>
     </div>
   );
