@@ -8,8 +8,8 @@ const useStyles = createStyles((theme, params, getRef) => ({
     textDecoration: "none !important",
   },
   label: {
-    fontSize: 10,
-    color: theme.colors.accent2[0],
+    fontSize: 12,
+    color: theme.colors.contrast2[0],
     textDecoration: "none",
   },
 }));

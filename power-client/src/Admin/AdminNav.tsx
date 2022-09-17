@@ -1,4 +1,5 @@
-import { Box, createStyles } from "@mantine/core";
+import { createStyles, Stack } from "@mantine/core";
+import AdminNavElement from "./AdminNavElement";
 
 const useStyles = createStyles((theme, _params, getRef) => ({
   container: {
@@ -18,16 +19,28 @@ const useStyles = createStyles((theme, _params, getRef) => ({
     borderLeft: "15px solid white",
     borderBottom: "20px solid transparent",
   },
+  addSeparator: {
+    ":after": {
+      content: "''",
+      background: theme.colors.contrast2[0],
+      width: 100,
+      height: 4,
+      display: "block",
+    },
+  },
 }));
 
 function AdminNav() {
   const { classes } = useStyles();
 
   return (
-    <Box p="lg" className={classes.container}>
+    <Stack className={classes.container}>
       <div className={classes.triangle} />
-      asf
-    </Box>
+      <div className={classes.addSeparator}>
+        <AdminNavElement to="" label="DASHBOARD" active={true} />
+      </div>
+      <AdminNavElement to="" label="SMTH" active={false} />
+    </Stack>
   );
 }
 
