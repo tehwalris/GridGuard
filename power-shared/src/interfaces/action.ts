@@ -1,4 +1,4 @@
-import { Device } from "./state";
+import { Device, GridPowerConsumption } from "./state";
 
 export type Action =
   | AddUserAction
@@ -40,5 +40,6 @@ export interface EndEventAction {
 }
 export interface TickSimulationAction {
   type: ActionType.TickSimulation;
-  devices: Device[];
+  devices: Device[]; // only a subset of devices for perf reasons
+  powerConsumption: GridPowerConsumption; // from all devices, not just the subset
 }

@@ -81,10 +81,13 @@ export class DeviceServer {
     this.deviceIdByClient = new WeakMap();
   }
 
-  getDevices(): Device[] {
+  getDevices(limit: number | undefined): Device[] {
     const devices: Device[] = [];
     for (const device of this.devices.values()) {
       devices.push(copyDevice(device));
+      if (limit !== undefined && devices.length >= limit) {
+        break;
+      }
     }
     return devices;
   }
@@ -228,6 +231,13 @@ class SometimesOnDeviceClient extends DeviceClient {
     this.wantsToBePowered = initiallyPowered;
     this.autoSetPowered();
     if (initiallyPowered) {
+      await sleep(Math.random() * this.noisyTime(this.typicalOnTime));
+      this.wantsToBePowered = false;
+      this.autoSetPowered();
+    } else {
+      await sleep(Math.random() * this.noisyTime(this.typicalOffTime));
+      this.wantsToBePowered = true;
+      this.autoSetPowered();
       await sleep(this.noisyTime(this.typicalOnTime));
       this.wantsToBePowered = false;
       this.autoSetPowered();

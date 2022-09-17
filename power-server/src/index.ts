@@ -6,6 +6,7 @@ import {
   ClientMessage,
   createVirtualDevices,
   DeviceServer,
+  getPowerConsumption,
   LogEntry,
   LogEntryServerMessage,
   makeInitialState,
@@ -30,6 +31,9 @@ interface UndoPoint {
 
 const app = express();
 app.use(cors());
+
+const simulatedDeviceCount = 100000;
+const shownDeviceCount = 500;
 
 class Lobby {
   private log: LogEntry[] = [];
@@ -57,10 +61,15 @@ class Lobby {
 
   private onTick = () => {
     this.deviceServer.setToggles(this.state.toggles);
+    const tick = this.state.simulation.tick + 1;
     const entry = this.pushToLog(
       {
         type: ActionType.TickSimulation,
-        devices: this.deviceServer.getDevices(),
+        devices: this.deviceServer.getDevices(shownDeviceCount),
+        powerConsumption: getPowerConsumption(
+          tick,
+          this.deviceServer.getDevices(undefined),
+        ),
       },
       undefined,
     );
@@ -78,7 +87,7 @@ class Lobby {
     this.stop();
     this.tickHandle = setInterval(this.onTick, tickMillis);
     this.deviceServer = new DeviceServer();
-    for (const deviceClient of createVirtualDevices(1000)) {
+    for (const deviceClient of createVirtualDevices(simulatedDeviceCount)) {
       this.deviceServer.addClient(deviceClient);
     }
   }

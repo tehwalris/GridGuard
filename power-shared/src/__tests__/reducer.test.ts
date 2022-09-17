@@ -1,5 +1,4 @@
 import { Draft, produce } from "immer";
-import R from "ramda";
 import { Action, ActionType } from "../interfaces/action";
 import { State } from "../interfaces/state";
 import { makeInitialState, reducer } from "../reducer";
@@ -96,36 +95,6 @@ describe("reducer", () => {
           powered: true,
         },
         /toggle does not exist/,
-      ),
-    );
-  });
-
-  describe("TickSimulation", () => {
-    test(
-      "tick simulation",
-      makeReducerCustomCheckTest(
-        () => {},
-        {
-          type: ActionType.TickSimulation,
-          devices: [],
-        },
-        (outputState, inputState) => {
-          expect(outputState.simulation.tick).toBe(
-            inputState.simulation.tick + 1,
-          );
-          expect(outputState.simulation.powerConsumption).not.toBe(
-            inputState.simulation.powerConsumption,
-          );
-          expect(outputState.simulationHistory.length).toBe(
-            inputState.simulationHistory.length,
-          );
-          expect(outputState.simulationHistory.slice(0, -1)).toStrictEqual(
-            inputState.simulationHistory.slice(1),
-          );
-          expect(R.last(outputState.simulationHistory)!).toStrictEqual(
-            inputState.simulation,
-          );
-        },
       ),
     );
   });

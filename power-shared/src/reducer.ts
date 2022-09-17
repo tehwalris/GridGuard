@@ -14,7 +14,7 @@ export const nonSmartRatio = 0.8;
 const gridYearlyEnergy = 58.1 * 1e9 * 1000; // Wh
 export const gridMeanPower = gridYearlyEnergy / (365 * 24); // W
 
-function getPowerConsumption(
+export function getPowerConsumption(
   tick: number,
   devices: Device[],
 ): GridPowerConsumption {
@@ -40,14 +40,7 @@ function getPowerConsumption(
 }
 
 function getBasePowerConsumptionFromTick(tick: number): number {
-  return (
-    1 +
-    0.003 *
-      Math.sin(
-        tick / 3 + Math.sin(tick) + Math.sin(tick / 10) + 0.1 * Math.random(),
-      ) +
-    0.005 * Math.random()
-  );
+  return 1;
 }
 
 function getPowerProduction(
@@ -55,13 +48,7 @@ function getPowerProduction(
   meanProduction: number,
   eventOngoing: boolean,
 ): number {
-  return (
-    (eventOngoing ? 0.95 : 1) *
-    meanProduction *
-    (1 +
-      0.005 * Math.sin((tick / 3 + 2) / 2.5 + Math.sin(3 * tick + 1.5)) +
-      0.003 * Math.random())
-  );
+  return meanProduction * (eventOngoing ? 0.95 : 1);
 }
 
 function makeDeviceIndicesById(devices: Device[]): {
@@ -202,10 +189,7 @@ export const reducer = (_state: State, action: Action): State =>
           _.cloneDeep(original(state.simulation) ?? state.simulation),
         );
         state.simulation.tick++;
-        state.simulation.powerConsumption = getPowerConsumption(
-          state.simulation.tick,
-          state.devices,
-        );
+        state.simulation.powerConsumption = action.powerConsumption;
         state.simulation.powerProduction = getPowerProduction(
           historySize,
           state.meanProduction,
