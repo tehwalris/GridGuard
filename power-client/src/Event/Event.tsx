@@ -1,5 +1,5 @@
 import { Button, Center, createStyles, Group, Stack } from "@mantine/core";
-import { ActionType } from "power-shared";
+import { ActionType, State } from "power-shared";
 import { RunAction } from "../useUnilog";
 
 const useStyles = createStyles((theme, _params, getRef) => ({
@@ -8,14 +8,19 @@ const useStyles = createStyles((theme, _params, getRef) => ({
 
 interface Props {
   runAction: RunAction;
+  state: State;
 }
-function Event({ runAction }: Props) {
+function Event({ runAction, state }: Props) {
   const { classes } = useStyles();
 
   return (
     <Center className={classes.container}>
       <Stack spacing={0} align="center">
-        <img src={"/Powerplant.svg"} alt="" height={450} />
+        <img
+          src={"/Powerplant" + (state.eventOngoing ? "Broken" : "") + ".svg"}
+          alt=""
+          height={450}
+        />
         <Group>
           <Button
             onClick={() =>

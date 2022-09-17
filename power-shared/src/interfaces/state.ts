@@ -4,6 +4,7 @@ export interface State {
   toggles: DeviceClassToggle[];
   simulation: SimulationState;
   simulationHistory: SimulationState[];
+  eventOngoing: boolean;
 }
 
 export interface User {
