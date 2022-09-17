@@ -32,6 +32,7 @@ function AdminContent({ state, runAction }: Props) {
     {},
   );
 
+  // TODO this is out of date
   const potentialSavingsByClass =
     state.simulation.powerConsumption.byDeviceClassWithoutSavings;
 
@@ -43,7 +44,7 @@ function AdminContent({ state, runAction }: Props) {
     .map((toggle) =>
       draftPowered[toggle.key] !== undefined &&
       toggle.powered !== draftPowered[toggle.key]
-        ? potentialSavingsByClass[toggle.key] *
+        ? (potentialSavingsByClass[toggle.key] ?? 0) *
           Math.pow(-1, +draftPowered[toggle.key])
         : 0,
     )
