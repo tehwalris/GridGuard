@@ -6,6 +6,7 @@ import { colors } from "../colors";
 interface Props {
   data: number[];
   title: string;
+  predictedDifference?: number;
 }
 
 const useStyles = createStyles((theme, _params, getRef) => ({
@@ -34,15 +35,22 @@ function CustomClip({ ...props }) {
   );
 }
 
-function LineChart({ data, title }: Props) {
+function LineChart({ data, title, predictedDifference = 0 }: Props) {
   const { classes } = useStyles();
+
+  const predictedData = data.map((v, i) => {
+    const fractionProgress = i / data.length;
+    return (
+      v - predictedDifference / (1 + Math.exp(-10 * (fractionProgress - 0.5)))
+    );
+  });
 
   return (
     <div>
       <Text className={classes.title} p="sm" size={30}>
         {title}
       </Text>
-      <VictoryChart domainPadding={20}>
+      <VictoryChart domainPadding={20} height={260}>
         <VictoryAxis />
         <VictoryAxis
           label="Load"
@@ -58,6 +66,17 @@ function LineChart({ data, title }: Props) {
               ? [Math.min(0.98, _.min(data)!), Math.max(1.02, _.max(data)!)]
               : undefined
           }
+        />
+        <VictoryLine
+          interpolation="basis"
+          style={{
+            data: {
+              stroke: colors.contrast2![0],
+              strokeDasharray: "8, 4",
+              strokeWidth: 4,
+            },
+          }}
+          data={predictedData}
         />
         <VictoryLine
           interpolation="basis"
@@ -81,7 +100,6 @@ function LineChart({ data, title }: Props) {
           }}
           data={data}
         />
-
         <CustomClip />
         {/*<VictoryScatter
           size={5}

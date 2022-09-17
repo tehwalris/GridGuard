@@ -29,9 +29,13 @@ function AdminContent({ state, runAction }: Props) {
   return (
     <Box p="md" className={classes.container}>
       <Grid grow gutter="lg">
-        <Grid.Col span={5} p={0}>
+        <Grid.Col span={4} p={0}>
           <AdminCard>
-            <LineChart data={recentLoad} title="NETWORK LOAD" />
+            <LineChart
+              predictedDifference={0.1}
+              data={recentLoad}
+              title="NETWORK LOAD"
+            />
           </AdminCard>
           <Grid grow gutter="sm">
             <Grid.Col span={1} p={0}>

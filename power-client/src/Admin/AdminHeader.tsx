@@ -30,7 +30,9 @@ function AdminHeader() {
     <div className={classes.container}>
       <Center className={classes.logo}>Logo</Center>
       <Center inline className={classes.title}>
-        <Box p="lg">GRIDGUARD</Box>
+        <Box p="sm">
+          <img height={75} src="Logi-3.svg" alt="" />
+        </Box>
       </Center>
     </div>
   );
