@@ -33,23 +33,25 @@ function AdminContent({ state, runAction }: Props) {
   );
 
   // TODO this is out of date
-  const potentialSavingsByClass =
+  const maxByClass =
     state.simulation.powerConsumption.byDeviceClassWithoutSavings;
+
+  const currentByClass = state.simulation.powerConsumption.byDeviceClass;
+  console.log(maxByClass, currentByClass);
 
   const toggles = state.toggles;
 
-  const totalConsumption = state.simulation.powerConsumption.total;
-
-  const potentialSave = toggles
+  toggles
     .map((toggle) =>
-      draftPowered[toggle.key] !== undefined &&
-      toggle.powered !== draftPowered[toggle.key]
-        ? (potentialSavingsByClass[toggle.key] ?? 0) *
-          Math.pow(-1, +draftPowered[toggle.key])
-        : 0,
+      draftPowered[toggle.key] === true
+        ? maxByClass[toggle.key]! - currentByClass[toggle.key]!
+        : currentByClass[toggle.key]!,
     )
     .reduce((c, p) => c + p, 0);
 
+  const totalConsumption = state.simulation.powerConsumption.total;
+
+  const potentialSave = 0;
   return (
     <Box p="md" className={classes.container}>
       <Grid grow gutter="lg">
