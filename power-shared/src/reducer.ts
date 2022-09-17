@@ -7,28 +7,34 @@ import { unreachable } from "./util";
 const historySize = 20;
 export const tickMillis = 500;
 
-function getPowerFromTick(tick: number): number {
+function getBasePowerFromTick(tick: number): number {
   return 1000 + Math.sin(tick) * 100;
 }
 
+function countPoweredToggles(toggles: State["toggles"]): number {
+  return toggles.filter((t) => t.powered).length;
+}
+
 export function makeInitialState(): State {
+  const toggles: State["toggles"] = [
+    "dishwasher",
+    "fridge",
+    "microwave",
+    "oven",
+    "light",
+    "heater",
+  ].map((key, i) => ({ key, powered: (i + 1) % 3 !== 0 }));
+  const poweredToggles = countPoweredToggles(toggles);
   return {
     users: [],
-    toggles: [
-      "dishwasher",
-      "fridge",
-      "microwave",
-      "oven",
-      "light",
-      "heater",
-    ].map((key, i) => ({ key, powered: (i + 1) % 3 !== 0 })),
+    toggles,
     simulation: {
       tick: historySize,
-      powerConsumption: getPowerFromTick(historySize),
+      powerConsumption: getBasePowerFromTick(historySize) * poweredToggles,
     },
     simulationHistory: _.times(historySize, (i) => ({
       tick: i,
-      powerConsumption: getPowerFromTick(i),
+      powerConsumption: getBasePowerFromTick(i) * poweredToggles,
     })),
   };
 }
@@ -81,9 +87,9 @@ export const reducer = (_state: State, action: Action): State =>
           _.cloneDeep(original(state.simulation) ?? state.simulation),
         );
         state.simulation.tick++;
-        state.simulation.powerConsumption = getPowerFromTick(
-          state.simulation.tick,
-        );
+        const poweredToggles = countPoweredToggles(state.toggles);
+        state.simulation.powerConsumption =
+          getBasePowerFromTick(state.simulation.tick) * poweredToggles;
         break;
       }
       default: {
