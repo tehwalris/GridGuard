@@ -43,9 +43,11 @@ function AdminContent({ state, runAction }: Props) {
 
   toggles
     .map((toggle) =>
-      draftPowered[toggle.key] === true
+      draftPowered[toggle.key] === false
         ? maxByClass[toggle.key]! - currentByClass[toggle.key]!
-        : currentByClass[toggle.key]!,
+        : draftPowered[toggle.key] === true
+        ? currentByClass[toggle.key]!
+        : 0,
     )
     .reduce((c, p) => c + p, 0);
 

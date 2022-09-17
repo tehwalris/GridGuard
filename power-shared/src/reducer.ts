@@ -41,9 +41,7 @@ function getPowerConsumption(
 
 function getBasePowerConsumptionFromTick(tick: number): number {
   // TODO can't have math random in reducer
-  return (
-    1 + 0.005 * Math.sin(tick / 3 + 0.2 * Math.sin(tick)) + Math.random() / 100
-  );
+  return 1; //+ 0.005 * Math.sin(tick / 3 + 0.2 * Math.sin(tick)) + Math.random() / 100
 }
 
 function getPowerProduction(
@@ -52,10 +50,9 @@ function getPowerProduction(
   eventOngoing: boolean,
 ): number {
   return (
-    (eventOngoing ? 0.95 : 1) *
-      meanProduction *
-      (1 + 0.005 * Math.sin((tick + 2) / 2.5)) +
-    Math.random() / 100
+    (eventOngoing ? 0.95 : 1) * meanProduction /*
+      *(1 + 0.005 * Math.sin((tick + 2) / 2.5)) +
+    Math.random() / 100*/
   );
 }
 
