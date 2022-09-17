@@ -12,16 +12,24 @@ const nonSmartRatio = 0.8;
 const gridYearlyEnergy = 58.1 * 1e9 * 1000; // Wh
 const gridMeanPower = gridYearlyEnergy / (365 * 24); // W
 
-function getPowerConsumption(tick: number, toggles: State["toggles"]): number {
-  const poweredToggles = countPoweredToggles(toggles);
-  return (
-    gridMeanPower *
-    getBasePowerConsumptionFromTick(tick) *
-    (((1 - nonSmartRatio) * poweredToggles) / toggles.length + nonSmartRatio)
-  );
+function getPowerConsumption(
+  tick: number,
+  toggles: State["toggles"],
+): { total: number; byDeviceClass: { [key: string]: number } } {
+  let total = 0;
+  const byDeviceClass: { [key: string]: number } = {};
+  const temp = gridMeanPower * getBasePowerConsumptionFromTick(tick);
+  for (const toggle of toggles) {
+    const thisDevice = toggle.powered ? temp * (1 - nonSmartRatio) : 0;
+    byDeviceClass[toggle.key] = thisDevice;
+    total += thisDevice;
+  }
+  total += temp * nonSmartRatio;
+  return { total, byDeviceClass };
 }
 
 function getBasePowerConsumptionFromTick(tick: number): number {
+  // TODO can't have math random in reducer
   return (
     1 + 0.005 * Math.sin(tick / 3 + 0.2 * Math.sin(tick)) + Math.random() / 100
   );
@@ -121,7 +129,6 @@ export const reducer = (_state: State, action: Action): State =>
           _.cloneDeep(original(state.simulation) ?? state.simulation),
         );
         state.simulation.tick++;
-        const poweredToggles = countPoweredToggles(state.toggles);
         state.simulation.powerConsumption = getPowerConsumption(
           state.simulation.tick,
           state.toggles,

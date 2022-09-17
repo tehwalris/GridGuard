@@ -42,7 +42,9 @@ function AdminContent({ state, runAction }: Props) {
             <Grid.Col span={1} p={0}>
               <AdminNumberCard
                 label={"Current Usage [MW] "}
-                value={Math.round(state.simulation.powerConsumption / 10e6)}
+                value={Math.round(
+                  state.simulation.powerConsumption.total / 10e6,
+                )}
               />
             </Grid.Col>
             <Grid.Col span={1} p={0}>
