@@ -88,7 +88,7 @@ export function makeInitialState(): State {
   const meanProduction = gridMeanPower;
   const toggles: State["toggles"] = allDeviceClassKeysSorted.map((key) => ({
     key,
-    powered: true,
+    targetSavingRatio: 0,
   }));
 
   const prando = new Prando();
@@ -137,14 +137,6 @@ function makeInitialUser(id: string): User {
   };
 }
 
-function requireUser(state: State, action: { userId: string }): User {
-  const user = state.users.find((u) => u.id === action.userId);
-  if (!user) {
-    throw new Error(`unknown user: ${action.userId}`);
-  }
-  return user;
-}
-
 export const reducer = (_state: State, action: Action): State =>
   produce(_state, (state) => {
     switch (action.type) {
@@ -162,7 +154,7 @@ export const reducer = (_state: State, action: Action): State =>
       case ActionType.SetToggle: {
         for (const toggle of state.toggles) {
           if (toggle.key === action.key) {
-            toggle.powered = action.powered;
+            toggle.targetSavingRatio = action.targetSavingRatio;
             return;
           }
         }

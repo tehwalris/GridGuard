@@ -29,7 +29,8 @@ export class DeviceServer {
   private clients: DeviceClient[] = [];
   private devices = new Map<string, Device>();
   private deviceIdByClient = new WeakMap<DeviceClient, string>();
-  private lastTogglesByDeviceClassKey = new Map<string, DeviceClassToggle>();
+  private allowPoweredByClient = new WeakMap<DeviceClient, boolean>();
+  private randomnessByClient = new WeakMap<DeviceClient, number>();
 
   private onMessage(msg: DeviceClientMessage, client: DeviceClient) {
     switch (msg.type) {
@@ -69,6 +70,7 @@ export class DeviceServer {
 
   addClient(client: DeviceClient) {
     this.clients.push(client);
+    this.randomnessByClient.set(client, Math.random());
     client.start((msg) => this.onMessage(msg, client));
   }
 
@@ -111,19 +113,17 @@ export class DeviceServer {
       if (!toggle) {
         continue;
       }
-      const lastToggle = this.lastTogglesByDeviceClassKey.get(
-        device.deviceClassKey,
-      );
-      if (lastToggle && toggle.powered === lastToggle.powered) {
+      const allowPowered =
+        (this.randomnessByClient.get(client) ?? 0.5) > toggle.targetSavingRatio;
+      if (allowPowered === this.allowPoweredByClient.get(client)) {
         continue;
       }
+      this.allowPoweredByClient.set(client, allowPowered);
       client.onMessage({
         type: MessageType.PreferenceDeviceServer,
-        allowPowered: toggle.powered,
+        allowPowered,
       });
     }
-
-    this.lastTogglesByDeviceClassKey = toggleByDeviceClassKey;
   }
 }
 

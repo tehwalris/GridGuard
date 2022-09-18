@@ -65,7 +65,7 @@ function UserContent({ state, userId }: Props) {
   const affectedDeviceCount = selectUserDeviceSimulationStates(
     state,
     userId,
-  ).filter((s) => s.affected).length;
+  ).filter((s) => s.deviceAffected).length;
 
   return (
     <Box className={classes.container}>

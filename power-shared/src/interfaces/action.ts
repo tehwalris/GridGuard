@@ -30,7 +30,7 @@ export interface RemoveUserAction {
 export interface SetToggleAction {
   type: ActionType.SetToggle;
   key: string;
-  powered: boolean;
+  targetSavingRatio: number;
 }
 export interface StartEventAction {
   type: ActionType.StartEvent;

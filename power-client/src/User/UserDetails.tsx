@@ -58,24 +58,39 @@ function UserContent({ state, userId }: Props) {
                     />
                     <div>{niceDeviceType}</div>
                   </Group>
-                  {deviceState?.affected && (
+                  {(deviceState?.deviceAffected && (
                     <ActionIcon color="orange">
                       <IconInfoCircle />
                     </ActionIcon>
-                  )}
+                  )) ||
+                    (deviceState?.deviceClassAffected && (
+                      <ActionIcon color="blue">
+                        <IconInfoCircle />
+                      </ActionIcon>
+                    ))}
                 </Group>
               </Accordion.Control>
               <Accordion.Panel>
-                {deviceState?.affected ? (
+                {(deviceState?.deviceAffected && (
                   <div>
                     To help prevent an immediate black-out, we have temporarily
-                    disabled all {niceDeviceType.toLowerCase()}s. We expect the
-                    situation to stabilize shortly and thank you for your
-                    cooperation!
+                    disabled some {niceDeviceType.toLowerCase()}s, including
+                    yours. We expect the situation to stabilize shortly and
+                    thank you for your cooperation!
                   </div>
-                ) : (
-                  <div>{niceDeviceType}s are currently running normally!</div>
-                )}
+                )) ||
+                  (deviceState?.deviceClassAffected && (
+                    <div>
+                      Your {niceDeviceType.toLowerCase()} is currently running
+                      normally, but some others {niceDeviceType.toLowerCase()}s
+                      have been temporarily disabled to stabilize the grid.
+                    </div>
+                  )) || (
+                    <div>
+                      All {niceDeviceType.toLowerCase()}s are currently running
+                      normally!
+                    </div>
+                  )}
               </Accordion.Panel>
             </Accordion.Item>
           );

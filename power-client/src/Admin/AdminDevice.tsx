@@ -7,10 +7,10 @@ const useStyles = createStyles((theme, _params, getRef) => ({
 
 interface Props {
   device: DeviceClassToggle;
-  onPoweredChange: (powered: boolean) => void;
+  onTargetSavingsRatioChange: (targetSavingsRatio: number) => void;
 }
 
-function AdminDevice({ device, onPoweredChange }: Props) {
+function AdminDevice({ device, onTargetSavingsRatioChange }: Props) {
   const { classes } = useStyles();
   const niceDeviceKey =
     device.key.charAt(0).toUpperCase() + device.key.slice(1);
@@ -22,8 +22,10 @@ function AdminDevice({ device, onPoweredChange }: Props) {
       </Group>
       <Switch
         size="lg"
-        checked={!device.powered}
-        onChange={(event) => onPoweredChange(!event.currentTarget.checked)}
+        checked={device.targetSavingRatio > 0}
+        onChange={(event) =>
+          onTargetSavingsRatioChange(event.currentTarget.checked ? 1 : 0)
+        }
         onLabel="ON"
         offLabel="OFF"
       />

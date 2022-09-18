@@ -28,8 +28,8 @@ function AdminContent({ state, runAction }: Props) {
   const recentLoad = selectRecentLoad(state);
   const currentLoad = recentLoad.slice(-1)[0];
 
-  const [draftPowered, setDraftPowered] = useState<{
-    [key: string]: boolean | undefined;
+  const [draftTargetSavingRatios, setDraftTargetSavingRatios] = useState<{
+    [key: string]: number | undefined;
   }>({});
 
   // TODO this is out of date
@@ -41,15 +41,13 @@ function AdminContent({ state, runAction }: Props) {
 
   const toggles = state.toggles;
 
-  console.log(draftPowered);
-
   const potentialSave = toggles
     .map(
       (toggle) =>
         currentByClass[toggle.key]! -
-        (draftPowered[toggle.key] ?? toggle.powered
-          ? maxByClass[toggle.key]!
-          : 0),
+        (1 -
+          (draftTargetSavingRatios[toggle.key] ?? toggle.targetSavingRatio)) *
+          maxByClass[toggle.key]!,
     )
     .reduce((c, p) => c + p, 0);
 
@@ -97,8 +95,8 @@ function AdminContent({ state, runAction }: Props) {
           <AdminDeviceList
             toggles={state.toggles}
             runAction={runAction}
-            draftPowered={draftPowered}
-            setDraftPowered={setDraftPowered}
+            draftTargetSavingRatios={draftTargetSavingRatios}
+            setDraftTargetSavingRatios={setDraftTargetSavingRatios}
           />
         </Grid.Col>
       </Grid>

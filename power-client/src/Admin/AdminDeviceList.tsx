@@ -22,37 +22,38 @@ const useStyles = createStyles((theme, _params, getRef) => ({
 interface Props {
   toggles: DeviceClassToggle[];
   runAction: RunAction;
-  draftPowered: { [key: string]: boolean | undefined };
-  setDraftPowered: (smth: any) => void;
+  draftTargetSavingRatios: { [key: string]: number | undefined };
+  setDraftTargetSavingRatios: (smth: any) => void;
 }
 
 function AdminDeviceList({
   toggles,
   runAction,
-  draftPowered,
-  setDraftPowered,
+  draftTargetSavingRatios,
+  setDraftTargetSavingRatios,
 }: Props) {
   const { classes } = useStyles();
 
   const onApply = () => {
     for (const toggle of toggles) {
-      if (draftPowered[toggle.key] !== undefined) {
+      const targetSavingRatio = draftTargetSavingRatios[toggle.key];
+      if (targetSavingRatio !== undefined) {
         runAction(() => ({
           type: ActionType.SetToggle,
           key: toggle.key,
-          powered: draftPowered[toggle.key] ?? toggle.powered,
+          targetSavingRatio,
         }));
       }
     }
-    setDraftPowered({});
+    setDraftTargetSavingRatios({});
   };
 
-  const onReset = () => setDraftPowered({});
+  const onReset = () => setDraftTargetSavingRatios({});
 
   const anyToggleChanged = toggles.some(
     (toggle) =>
-      draftPowered[toggle.key] !== undefined &&
-      draftPowered[toggle.key] !== toggle.powered,
+      draftTargetSavingRatios[toggle.key] !== undefined &&
+      draftTargetSavingRatios[toggle.key] !== toggle.targetSavingRatio,
   );
 
   return (
@@ -67,10 +68,15 @@ function AdminDeviceList({
               key={toggle.key}
               device={{
                 ...toggle,
-                powered: draftPowered[toggle.key] ?? toggle.powered,
+                targetSavingRatio:
+                  draftTargetSavingRatios[toggle.key] ??
+                  toggle.targetSavingRatio,
               }}
-              onPoweredChange={(v) =>
-                setDraftPowered((old: any) => ({ ...old, [toggle.key]: v }))
+              onTargetSavingsRatioChange={(v) =>
+                setDraftTargetSavingRatios((old: any) => ({
+                  ...old,
+                  [toggle.key]: v,
+                }))
               }
             />
           </div>

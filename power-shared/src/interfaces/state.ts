@@ -16,7 +16,7 @@ export interface User {
 
 export interface DeviceClassToggle {
   key: string;
-  powered: boolean;
+  targetSavingRatio: number;
 }
 
 export interface SimulationState {
