@@ -21,6 +21,7 @@ import * as R from "ramda";
 import timesyncServer from "timesync/server";
 import { v4 as genId } from "uuid";
 import WebSocket from "ws";
+import { PhysicalDeviceBridge } from "./bridge";
 
 const LOBBY_TIMEOUT_MS = 1000 * 60 * 5;
 
@@ -44,6 +45,7 @@ class Lobby {
   private clients = new Set<WebSocket>();
   private tickHandle: NodeJS.Timer | undefined;
   private deviceServer = new DeviceServer();
+  private microwaveBridge = new PhysicalDeviceBridge("192.168.88.192", 80);
 
   private pushToLog(action: Action, undoKey: string | undefined): LogEntry {
     const nextState = reducer(this.state, action); // test if the reducer throws when the action is applied
@@ -87,7 +89,10 @@ class Lobby {
     this.stop();
     this.tickHandle = setInterval(this.onTick, tickMillis);
     this.deviceServer = new DeviceServer();
-    for (const deviceClient of createVirtualDevices(simulatedDeviceCount)) {
+    for (const deviceClient of createVirtualDevices(
+      simulatedDeviceCount,
+      (powered) => this.microwaveBridge.setPowered(powered),
+    )) {
       this.deviceServer.addClient(deviceClient);
     }
   }

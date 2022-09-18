@@ -215,6 +215,7 @@ class SometimesOnDeviceClient extends DeviceClient {
     private typicalPowerConsumption: number,
     private typicalOnTime: number,
     private typicalOffTime: number,
+    private onSetPowered: (powered: boolean) => void,
   ) {
     super();
   }
@@ -259,6 +260,7 @@ class SometimesOnDeviceClient extends DeviceClient {
   }
 
   private setPowered(powered: boolean) {
+    this.onSetPowered(powered);
     this.sendMessage?.({
       type: MessageType.ReportDeviceClient,
       powerConsumption: powered ? this.typicalPowerConsumption : 0,
@@ -277,7 +279,10 @@ class SometimesOnDeviceClient extends DeviceClient {
   }
 }
 
-export function createVirtualDevices(deviceCount: number): DeviceClient[] {
+export function createVirtualDevices(
+  deviceCount: number,
+  onMicrowaveChange: (powered: boolean) => void,
+): DeviceClient[] {
   const settingsByDeviceClass: {
     [key: string]:
       | { typicalOnTime: number; typicalOffTime: number }
@@ -292,7 +297,7 @@ export function createVirtualDevices(deviceCount: number): DeviceClient[] {
 
   // TODO HACK need to scale this down to realistic values and scale up somewhere else
   const targetPower = gridMeanPower * (1 - nonSmartRatio);
-  return _.times(deviceCount, () => {
+  return _.times(deviceCount, (i) => {
     const deviceClass =
       allDeviceClassKeysSorted[
         Math.floor(Math.random() * allDeviceClassKeysSorted.length)
@@ -310,6 +315,12 @@ export function createVirtualDevices(deviceCount: number): DeviceClient[] {
       targetPower / deviceCount / dutyCycle,
       settings.typicalOnTime,
       settings.typicalOffTime,
+      (powered) => {
+        if (deviceClass === "microwave" && i < 100) {
+          // TODO this merges events from multiple microwaves together
+          onMicrowaveChange(powered);
+        }
+      },
     );
   });
 }
