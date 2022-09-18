@@ -58,16 +58,29 @@ function UserContent({ state, userId }: Props) {
                     />
                     <div>{niceDeviceType}</div>
                   </Group>
-                  {(deviceState?.deviceAffected && (
-                    <ActionIcon color="orange">
-                      <IconInfoCircle />
-                    </ActionIcon>
-                  )) ||
-                    (deviceState?.deviceClassAffected && (
-                      <ActionIcon color="blue">
+                  <Group>
+                    {(deviceState?.deviceAffected && (
+                      <ActionIcon color="orange">
                         <IconInfoCircle />
                       </ActionIcon>
-                    ))}
+                    )) ||
+                      (deviceState?.deviceClassAffected && (
+                        <ActionIcon color="blue">
+                          <IconInfoCircle />
+                        </ActionIcon>
+                      ))}{" "}
+                    {
+                      <img
+                        height={20}
+                        src={
+                          "/" +
+                          (device.powerConsumption > 0 ? "sun" : "mond") +
+                          ".svg"
+                        }
+                        alt=""
+                      />
+                    }
+                  </Group>
                 </Group>
               </Accordion.Control>
               <Accordion.Panel>
