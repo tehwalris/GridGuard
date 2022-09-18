@@ -17,7 +17,6 @@ import {
   tickMillis,
   unreachable,
 } from "power-shared";
-import * as R from "ramda";
 import timesyncServer from "timesync/server";
 import { v4 as genId } from "uuid";
 import WebSocket from "ws";
@@ -37,10 +36,8 @@ const simulatedDeviceCount = 100000;
 const shownDeviceCount = 500;
 
 class Lobby {
-  private log: LogEntry[] = [];
+  private logLength: number = 0;
   private state: State = makeInitialState();
-  private undoneUndoKeys = new Set<string>();
-  private undoPoints = new Map<string, UndoPoint>();
   private lastConnectedAt = Date.now();
   private clients = new Set<WebSocket>();
   private tickHandle: NodeJS.Timer | undefined;
@@ -49,14 +46,8 @@ class Lobby {
 
   private pushToLog(action: Action, undoKey: string | undefined): LogEntry {
     const nextState = reducer(this.state, action); // test if the reducer throws when the action is applied
-    const newEntry: LogEntry = { id: this.log.length + 1, action, undoKey };
-    this.log.push(newEntry);
-    if (undoKey && !this.undoPoints.has(undoKey)) {
-      this.undoPoints.set(undoKey, {
-        firstEntryId: newEntry.id,
-        stateBeforeEntry: this.state,
-      });
-    }
+    const newEntry: LogEntry = { id: this.logLength + 1, action, undoKey };
+    this.logLength++;
     this.state = nextState;
     return newEntry;
   }
@@ -182,64 +173,7 @@ class Lobby {
           break;
         }
         case MessageType.RequestUndoClient: {
-          if (this.undoneUndoKeys.has(msg.undoKey)) {
-            console.warn(`${msg.undoKey} has already been undone`);
-            return;
-          }
-          const undoPoint = this.undoPoints.get(msg.undoKey);
-          if (!undoPoint) {
-            console.warn(
-              `${msg.undoKey} ocurred too long ago to be undone (or never ocurred)`,
-            );
-            return;
-          }
-
-          this.undoneUndoKeys.add(msg.undoKey);
-
-          this.state = undoPoint.stateBeforeEntry;
-          for (let i = undoPoint.firstEntryId - 1; i < this.log.length; i++) {
-            const logEntry = this.log[i];
-
-            if (logEntry.undoKey) {
-              const oldUndoPoint = this.undoPoints.get(logEntry.undoKey);
-              if (!oldUndoPoint) {
-                throw new Error("expected undo point to exist");
-              }
-              if (oldUndoPoint.firstEntryId === logEntry.id) {
-                this.undoPoints.set(logEntry.undoKey, {
-                  ...oldUndoPoint,
-                  stateBeforeEntry: this.state,
-                });
-              }
-            }
-
-            if (logEntry.undoKey && this.undoneUndoKeys.has(logEntry.undoKey)) {
-              continue;
-            }
-
-            try {
-              this.state = reducer(this.state, logEntry.action);
-            } catch (err) {
-              console.warn(
-                `action from entry ${logEntry.id} failed after undo: ${err}`,
-              );
-            }
-          }
-
-          const finalLogEntry = R.last(this.log);
-          if (!finalLogEntry) {
-            throw new Error("unexpected empty log");
-          }
-
-          const outMsg: ServerMessage = {
-            type: MessageType.ReportUndoServer,
-            undoKey: msg.undoKey,
-            finalEntryId: finalLogEntry.id,
-            finalState: this.state,
-          };
-          sendToSelf(outMsg);
-          sendToOthers(outMsg);
-
+          console.warn("HACK the undo feature was removed");
           break;
         }
         default:
