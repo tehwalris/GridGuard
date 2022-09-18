@@ -13,8 +13,8 @@ Visit `https://power.bitter.li` for a live demo! Sub pages are described below!
 
 - `/admin`: Admin panel where the government can monitor the grid and turn devices on and off. This is only optimized for full sized desktop windows!
 - `/user/home` and `/user/details`: Users see the live grid status and which (if any) devices they have are affected. THIS IS ONLY OPTIMIZED FOR MOBILE SIZED WINDOWS!
-- `/visualization`: displays a selection of the virtual SmartDevices and their on/off status.
 - `/event`: start and stop an "event" (reduction in electricity production like when a power plant goes offline)
+- `/visualization`: displays a selection of the virtual SmartDevices and their on/off status.
 
 ## Technical Info
 
@@ -66,3 +66,5 @@ cd power-client && yarn start
 ```
 
 This will start the frontend (most likely) on [localhost:3000](localhost:3000) and the server on [localhost:8088](localhost:8088).
+
+NOTE: The server needs about 10 seconds to start all virtual devices and balance the load. The graph might do weird things in that time!

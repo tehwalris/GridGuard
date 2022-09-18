@@ -50,10 +50,16 @@ function App() {
               <>
                 <ul>
                   <li>
-                    <Link to="/user">User</Link>
+                    <Link to="/user/home">User</Link>
                   </li>
                   <li>
                     <Link to="/admin">Admin</Link>
+                  </li>
+                  <li>
+                    <Link to="/event">Event</Link>
+                  </li>
+                  <li>
+                    <Link to="/visualization">Visualization</Link>
                   </li>
                 </ul>
               </>
