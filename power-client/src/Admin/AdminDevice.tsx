@@ -1,4 +1,4 @@
-import { createStyles, Group, Switch } from "@mantine/core";
+import { createStyles, Group, Slider, Stack } from "@mantine/core";
 import { DeviceClassToggle } from "power-shared";
 
 const useStyles = createStyles((theme, _params, getRef) => ({
@@ -15,21 +15,27 @@ function AdminDevice({ device, onTargetSavingsRatioChange }: Props) {
   const niceDeviceKey =
     device.key.charAt(0).toUpperCase() + device.key.slice(1);
   return (
-    <Group className={classes.container} position="apart">
+    <Stack className={classes.container}>
       <Group spacing={5}>
         <img height={24} src={"/" + device.key + ".svg"} alt="" />
         <div>{niceDeviceKey}</div>
       </Group>
-      <Switch
+      <Slider
         size="lg"
-        checked={device.targetSavingRatio > 0}
-        onChange={(event) =>
-          onTargetSavingsRatioChange(event.currentTarget.checked ? 1 : 0)
+        value={device.targetSavingRatio}
+        onChange={(v) => onTargetSavingsRatioChange(v)}
+        min={0}
+        max={1}
+        step={0.01}
+        label={(v) =>
+          v === 0
+            ? "All devices may run"
+            : v === 1
+            ? "All devices disabled"
+            : `${Math.round(v * 100)}% of devices disabled`
         }
-        onLabel="ON"
-        offLabel="OFF"
       />
-    </Group>
+    </Stack>
   );
 }
 
