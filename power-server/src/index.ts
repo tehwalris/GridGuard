@@ -32,8 +32,8 @@ interface UndoPoint {
 const app = express();
 app.use(cors());
 
-const simulatedDeviceCount = 100000;
-const shownDeviceCount = 500;
+const simulatedDeviceCount = 50000;
+const shownDeviceCount = 300;
 
 const microwaveIp = process.env["MICROWAVE_IP"] || "192.168.88.192";
 const microwavePort = parseInt(process.env["MICROWAVE_PORT"] || "80");
