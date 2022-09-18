@@ -1,5 +1,5 @@
 import { MantineProvider } from "@mantine/core";
-import { BrowserRouter, Link, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import Admin from "./Admin/Admin";
 import { colors } from "./colors";
 import Event from "./Event/Event";
@@ -44,7 +44,7 @@ function App() {
             path="event/*"
             element={<Event runAction={runAction} state={state} />}
           />
-          <Route
+          {/*<Route
             path="/"
             element={
               <>
@@ -64,7 +64,8 @@ function App() {
                 </ul>
               </>
             }
-          />
+          />*/}
+          <Route path="/" element={<Navigate to="/user/home" />} />
         </Routes>
       </BrowserRouter>
     </MantineProvider>
