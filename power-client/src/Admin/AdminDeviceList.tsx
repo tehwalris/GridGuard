@@ -60,7 +60,7 @@ function AdminDeviceList({
     <AdminCard>
       <Stack p={0} className={classes.container}>
         <Text className={classes.title} size={26} pl={12}>
-          FILTERS
+          LIMITS
         </Text>
         {toggles.map((toggle) => (
           <div className={classes.addSeparator}>
