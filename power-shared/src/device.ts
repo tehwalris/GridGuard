@@ -352,7 +352,7 @@ export function createVirtualDevices(
       targetPower / deviceCount / dutyCycle,
       settings.typicalOnTime,
       settings.typicalOffTime,
-      i === realMicrowaveIndex ? 500 : 8000,
+      i === realMicrowaveIndex ? 500 : 4000,
       i !== realMicrowaveIndex,
       (powered) => {
         if (i === realMicrowaveIndex) {
