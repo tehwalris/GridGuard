@@ -4,6 +4,8 @@
 #define LED_PIN 17
 #define LED_COUNT 62
 
+const int buttonPin = 22;
+
 // Replace with your network credentials
 const char *ssid = "walrus";
 const char *password = "walruc123";
@@ -14,16 +16,19 @@ WiFiServer server(80);
 const long timeoutTime = 1000;
 const int maxMessageLength = 50;
 
+bool buttonWasPressed = false;
+
 CRGB leds[LED_COUNT];
 
 void setSolidColor(bool on)
 {
-  int onPixelCount = 20;
+  int onPixelCount = 16;
 
   CRGB mainColor = CRGB::Black;
   if (on)
   {
-    mainColor.setRGB(0x9c, 0x60, 0x00);
+    // mainColor.setRGB(0x9c, 0x60, 0x00);
+    mainColor.setRGB(255, 96, 0);
   }
   for (int i = 0; i < LED_COUNT; i++)
   {
@@ -35,6 +40,8 @@ void setSolidColor(bool on)
 void setup()
 {
   Serial.begin(115200);
+
+  pinMode(buttonPin, INPUT);
 
   Serial.print("Connecting to ");
   Serial.println(ssid);
@@ -59,13 +66,14 @@ void setup()
 
 void loop()
 {
+  bool buttonIsPressed = digitalRead(buttonPin) == LOW;
+  buttonWasPressed = buttonWasPressed || buttonIsPressed;
+
   WiFiClient client = server.available();
   if (!client)
   {
     return;
   }
-
-  Serial.println("Client connected");
 
   char message[maxMessageLength + 1] = {};
   unsigned int messageLength = 0;
@@ -85,9 +93,6 @@ void loop()
     messageLength++;
   }
 
-  Serial.println(messageLength);
-  Serial.println(message);
-
   if (strcmp(message, "on") == 0)
   {
     setSolidColor(true);
@@ -98,7 +103,18 @@ void loop()
   }
   else
   {
-    client.println("unknown command");
+    Serial.println("unknown command");
+    Serial.println(message);
+  }
+
+  if (buttonWasPressed && !buttonIsPressed)
+  {
+    client.write('t');
+    buttonWasPressed = false;
+  }
+  else
+  {
+    client.write('f');
   }
 
   client.stop();
