@@ -271,11 +271,6 @@ export const reducer = (_state: State, action: Action): State =>
                 Math.min(oldTargetSavingRatio + maxStepSize, targetSavingRatio),
               );
 
-              console.log("DEBUG", {
-                classKey,
-                toggleTargetSavingRatio: toggle.targetSavingRatio,
-              });
-
               const expectedConsumptionThisClass =
                 (1 - toggle.targetSavingRatio) *
                 (state.simulation.powerConsumption.byDeviceClassWithoutSavings[
