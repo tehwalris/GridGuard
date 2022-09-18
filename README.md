@@ -7,12 +7,12 @@ _GridGuard_ puts a large swarm of private SmartDevices under a central command. 
 
 ## Demo
 
-_TODO_
+Visit `https://power.bitter.li` for a live demo! Sub pages are described below!
 
 ### Pages
 
-- `/admin`: Admin panel where the government can monitor the grid and turn devices on and off.
-- `/user/home` and `/user/details`: Users see the live grid status and which (if any) devices they have are affected.
+- `/admin`: Admin panel where the government can monitor the grid and turn devices on and off. This is only optimized for full sized desktop windows!
+- `/user/home` and `/user/details`: Users see the live grid status and which (if any) devices they have are affected. THIS IS ONLY OPTIMIZED FOR MOBILE SIZED WINDOWS!
 - `/visualization`: displays a selection of the virtual SmartDevices and their on/off status.
 - `/event`: start and stop an "event" (reduction in electricity production like when a power plant goes offline)
 
