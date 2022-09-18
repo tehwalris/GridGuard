@@ -4,6 +4,8 @@ export class PhysicalDeviceBridge {
   private isSending = false;
   private lastSent: boolean | undefined;
   private lastQueued: boolean = false;
+  private lastSentAt: number | undefined;
+  private resendIfOlderThanMillis = 2000;
 
   constructor(private ip: string, private port: number) {}
 
@@ -15,7 +17,12 @@ export class PhysicalDeviceBridge {
   }
 
   private startSendIfNeeded() {
-    if (!this.isSending && this.lastQueued !== this.lastSent) {
+    if (
+      !this.isSending &&
+      (this.lastQueued !== this.lastSent ||
+        !this.lastSentAt ||
+        Date.now() - this.lastSentAt > this.resendIfOlderThanMillis)
+    ) {
       this.send();
     }
   }
@@ -26,11 +33,15 @@ export class PhysicalDeviceBridge {
     const socket = new Socket();
     socket.setNoDelay();
     socket.setTimeout(1000);
+    socket.on("timeout", () => {
+      socket.end();
+    });
     let thisSent: boolean | undefined;
     socket.on("close", (hadError) => {
       this.isSending = false;
       if (!hadError) {
         this.lastSent = thisSent;
+        this.lastSentAt = Date.now();
       }
       setImmediate(this.startSendIfNeeded.bind(this));
     });
