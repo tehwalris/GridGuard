@@ -67,6 +67,10 @@ function UserContent({ state, userId }: Props) {
     userId,
   ).filter((s) => s.deviceAffected).length;
 
+  const powerSaved =
+    state.simulation.powerConsumption.totalWithoutSavings -
+    state.simulation.powerConsumption.total;
+
   return (
     <Box className={classes.container}>
       <div className={classes.leftBorder} />
@@ -92,7 +96,10 @@ function UserContent({ state, userId }: Props) {
         </UserCard>
         <Group position="apart">
           <UserCard>
-            <UserNumberBox number={1} label="Power Saved" />
+            <UserNumberBox
+              number={Math.round(powerSaved / 10e6)}
+              label="Power Saved [MW]"
+            />
           </UserCard>
           <UserCard>
             <Link to="/user/details">

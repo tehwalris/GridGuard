@@ -9,7 +9,7 @@ const useStyles = createStyles((theme, params, getRef) => ({
     fontWeight: 800,
   },
   label: {
-    fontSize: 14,
+    fontSize: 13,
     color: theme.colors.contrast2[0],
     textDecoration: "none",
   },
