@@ -163,6 +163,7 @@ export const reducer = (_state: State, action: Action): State =>
       }
       case ActionType.SetAutoAdjust: {
         state.autoAdjust = action.autoAdjust;
+        break;
       }
       case ActionType.StartEvent: {
         state.eventOngoing = true;
