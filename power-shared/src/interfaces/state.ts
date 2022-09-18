@@ -1,6 +1,7 @@
 export interface State {
   users: User[];
   devices: Device[];
+  deviceIndicesForAllUsers: number[];
   deviceIndicesById: { [id: string]: number | undefined };
   meanProduction: number;
   autoAdjust: boolean;
@@ -38,4 +39,5 @@ export interface Device {
   deviceClassKey: string;
   powerConsumption: number;
   powerConsumptionWithoutSavings: number;
+  forAllUsers: boolean; // make sure that all users see "own" this device at the same time
 }

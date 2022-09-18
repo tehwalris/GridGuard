@@ -48,6 +48,7 @@ export class DeviceServer {
           deviceClassKey: msg.deviceClassKey,
           powerConsumption: 0,
           powerConsumptionWithoutSavings: 0,
+          forAllUsers: msg.forAllUsers,
         });
         break;
       case MessageType.ReportDeviceClient:
@@ -185,6 +186,7 @@ class LegacyDeviceClient extends DeviceClient {
       type: MessageType.CreateDeviceClient,
       deviceId: this.deviceId,
       deviceClassKey: this.deviceClassKey,
+      forAllUsers: false,
     });
     this.setPowered(true);
     while (!this.isStopped()) {
@@ -220,6 +222,7 @@ class SometimesOnDeviceClient extends DeviceClient {
     private typicalOffTime: number,
     private typicalResponseTime: number,
     private autoOnOff: boolean,
+    private forAllUsers: boolean,
     private onSetPowered: (powered: boolean) => void,
   ) {
     super();
@@ -230,6 +233,7 @@ class SometimesOnDeviceClient extends DeviceClient {
       type: MessageType.CreateDeviceClient,
       deviceId: this.deviceId,
       deviceClassKey: this.deviceClassKey,
+      forAllUsers: this.forAllUsers,
     });
 
     if (!this.autoOnOff) {
@@ -354,6 +358,7 @@ export function createVirtualDevices(
       settings.typicalOffTime,
       i === realMicrowaveIndex ? 500 : 4000,
       i !== realMicrowaveIndex,
+      i === realMicrowaveIndex,
       (powered) => {
         if (i === realMicrowaveIndex) {
           // TODO this merges events from multiple microwaves together

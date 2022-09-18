@@ -30,15 +30,22 @@ export function selectUserDevices(state: State, userId: string): Device[] {
   const prando = new Prando(user.seed);
 
   const seenDeviceClassKeys = new Set<string>();
-  const userDevices = [];
-  for (let i = 0; i < 7; i++) {
-    const j = prando.nextInt(0, state.devices.length - 1);
-    const device = state.devices[j];
+  const userDevices: Device[] = [];
+  const tryIndex = (i: number) => {
+    const device = state.devices[i];
     if (seenDeviceClassKeys.has(device.deviceClassKey)) {
-      continue;
+      return;
     }
     seenDeviceClassKeys.add(device.deviceClassKey);
     userDevices.push(device);
+  };
+
+  for (const i of state.deviceIndicesForAllUsers) {
+    tryIndex(i);
+  }
+
+  for (let i = 0; i < 7; i++) {
+    tryIndex(prando.nextInt(0, state.devices.length - 1));
   }
 
   return userDevices;

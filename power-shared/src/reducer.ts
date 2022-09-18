@@ -101,6 +101,7 @@ export function makeInitialState(): State {
       deviceClassKey,
       powerConsumption: 3.14,
       powerConsumptionWithoutSavings: 3.14,
+      forAllUsers: false,
     });
   }
 
@@ -113,6 +114,7 @@ export function makeInitialState(): State {
   return {
     users: [],
     devices,
+    deviceIndicesForAllUsers: [],
     deviceIndicesById: makeDeviceIndicesById(devices),
     meanProduction,
     toggles,
@@ -182,6 +184,10 @@ export const reducer = (_state: State, action: Action): State =>
           throw new Error("invalid device class key");
         }
         state.devices = action.devices;
+        state.deviceIndicesForAllUsers = state.devices
+          .map((d, i) => ({ d, i }))
+          .filter(({ d }) => d.forAllUsers)
+          .map(({ i }) => i);
         state.deviceIndicesById = makeDeviceIndicesById(action.devices);
         state.meanProduction = _.mean(
           state.simulationHistory.map(
