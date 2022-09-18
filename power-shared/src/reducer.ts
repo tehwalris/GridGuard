@@ -200,32 +200,88 @@ export const reducer = (_state: State, action: Action): State =>
           state.eventOngoing,
         );
         if (state.autoAdjust) {
-          for (const toggle of state.toggles) {
-            const targetSavingAbsolute =
-              state.simulation.powerConsumption.totalWithoutSavings -
-              state.simulation.powerProduction;
-            const smartDeviceConsumptionWithoutSavings = _.sum(
-              Object.values(
-                state.simulation.powerConsumption.byDeviceClassWithoutSavings,
-              ).map((v) => v ?? 0),
+          const classKeysByPriority: string[][] = [
+            ["light"],
+            ["heater", "fridge"],
+            ["microwave", "oven"],
+            ["dishwasher"],
+          ];
+          const remainingClassKeys = new Set(allDeviceClassKeysSorted);
+          for (const classKey of classKeysByPriority.flatMap((v) => v)) {
+            remainingClassKeys.delete(classKey);
+          }
+          if (remainingClassKeys.size) {
+            classKeysByPriority.push(
+              R.sortBy((v) => v, [...remainingClassKeys]),
             );
-            const targetSavingRatio =
-              targetSavingAbsolute / smartDeviceConsumptionWithoutSavings;
-            const oldTargetSavingRatio = toggle.targetSavingRatio;
-            toggle.targetSavingRatio = Math.max(
-              0,
-              Math.min(1, targetSavingRatio),
-            );
-            const maxStepSize = 0.03;
-            toggle.targetSavingRatio = Math.max(
-              oldTargetSavingRatio - maxStepSize,
-              Math.min(
-                toggle.targetSavingRatio + maxStepSize,
-                toggle.targetSavingRatio,
+          }
+
+          const cumulativeConsumptionWithoutSavingsByPriority = [];
+          let temp = 0;
+          for (const classKeysThisPriority of classKeysByPriority) {
+            const consumptionWithoutSavingsThisPriority = _.sum(
+              classKeysThisPriority.map(
+                (k) =>
+                  state.simulation.powerConsumption.byDeviceClassWithoutSavings[
+                    k
+                  ],
               ),
             );
-            if (toggle.targetSavingRatio < 0.05) {
-              toggle.targetSavingRatio = 0;
+            temp += consumptionWithoutSavingsThisPriority;
+            cumulativeConsumptionWithoutSavingsByPriority.push(temp);
+          }
+
+          const smartDeviceConsumptionWithoutSavings = _.sum(
+            Object.values(
+              state.simulation.powerConsumption.byDeviceClassWithoutSavings,
+            ).map((v) => v ?? 0),
+          );
+          const nonSmartDeviceConsumption =
+            state.simulation.powerConsumption.totalWithoutSavings -
+            smartDeviceConsumptionWithoutSavings;
+
+          let expectedConsumption = nonSmartDeviceConsumption;
+          for (const classKeysThisPriority of classKeysByPriority) {
+            const consumptionWithoutSavingsThisPriority = _.sum(
+              classKeysThisPriority.map(
+                (k) =>
+                  state.simulation.powerConsumption.byDeviceClassWithoutSavings[
+                    k
+                  ],
+              ),
+            );
+            const targetSavingAbsolute =
+              expectedConsumption +
+              consumptionWithoutSavingsThisPriority -
+              state.simulation.powerProduction;
+            let targetSavingRatio =
+              targetSavingAbsolute / consumptionWithoutSavingsThisPriority;
+            targetSavingRatio = Math.max(0, Math.min(1, targetSavingRatio));
+
+            for (const classKey of classKeysThisPriority) {
+              const toggle = state.toggles.find((t) => t.key === classKey);
+              if (!toggle) {
+                continue;
+              }
+
+              const oldTargetSavingRatio = toggle.targetSavingRatio;
+              const maxStepSize = 0.03;
+              toggle.targetSavingRatio = Math.max(
+                oldTargetSavingRatio - maxStepSize,
+                Math.min(oldTargetSavingRatio + maxStepSize, targetSavingRatio),
+              );
+
+              console.log("DEBUG", {
+                classKey,
+                toggleTargetSavingRatio: toggle.targetSavingRatio,
+              });
+
+              const expectedConsumptionThisClass =
+                (1 - toggle.targetSavingRatio) *
+                (state.simulation.powerConsumption.byDeviceClassWithoutSavings[
+                  toggle.key
+                ] ?? 0);
+              expectedConsumption += expectedConsumptionThisClass;
             }
           }
         }

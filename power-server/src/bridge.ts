@@ -69,7 +69,7 @@ export class PhysicalDeviceBridge {
       setImmediate(this.startSendIfNeeded.bind(this));
     });
     socket.on("error", (err) => {
-      console.warn("PhysicalDeviceBridge send error", err);
+      // console.warn("PhysicalDeviceBridge send error", err);
     });
     socket.connect(this.port, this.ip, () => {
       if (socket.readyState !== "open") {
