@@ -1,5 +1,5 @@
 import { Box, createStyles, Grid } from "@mantine/core";
-import { selectRecentLoad, State } from "power-shared";
+import { ActionType, selectRecentLoad, State } from "power-shared";
 import { useState } from "react";
 import { colors } from "../colors";
 import LineChart from "../components/LineChart";
@@ -97,6 +97,10 @@ function AdminContent({ state, runAction }: Props) {
             runAction={runAction}
             draftTargetSavingRatios={draftTargetSavingRatios}
             setDraftTargetSavingRatios={setDraftTargetSavingRatios}
+            autoAdjust={state.autoAdjust}
+            setAutoAdjust={(autoAdjust) =>
+              runAction(() => ({ type: ActionType.SetAutoAdjust, autoAdjust }))
+            }
           />
         </Grid.Col>
       </Grid>

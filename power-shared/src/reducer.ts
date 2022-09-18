@@ -116,6 +116,7 @@ export function makeInitialState(): State {
     deviceIndicesById: makeDeviceIndicesById(devices),
     meanProduction,
     toggles,
+    autoAdjust: false,
     simulation: {
       tick: historySize,
       powerConsumption: getPowerConsumptionHacked(historySize),
@@ -160,6 +161,9 @@ export const reducer = (_state: State, action: Action): State =>
         }
         throw new Error(`toggle does not exist: ${action.key}`);
       }
+      case ActionType.SetAutoAdjust: {
+        state.autoAdjust = action.autoAdjust;
+      }
       case ActionType.StartEvent: {
         state.eventOngoing = true;
         break;
@@ -194,6 +198,36 @@ export const reducer = (_state: State, action: Action): State =>
           state.meanProduction,
           state.eventOngoing,
         );
+        if (state.autoAdjust) {
+          for (const toggle of state.toggles) {
+            const targetSavingAbsolute =
+              state.simulation.powerConsumption.totalWithoutSavings -
+              state.simulation.powerProduction;
+            const smartDeviceConsumptionWithoutSavings = _.sum(
+              Object.values(
+                state.simulation.powerConsumption.byDeviceClassWithoutSavings,
+              ).map((v) => v ?? 0),
+            );
+            const targetSavingRatio =
+              targetSavingAbsolute / smartDeviceConsumptionWithoutSavings;
+            const oldTargetSavingRatio = toggle.targetSavingRatio;
+            toggle.targetSavingRatio = Math.max(
+              0,
+              Math.min(1, targetSavingRatio),
+            );
+            const maxStepSize = 0.03;
+            toggle.targetSavingRatio = Math.max(
+              oldTargetSavingRatio - maxStepSize,
+              Math.min(
+                toggle.targetSavingRatio + maxStepSize,
+                toggle.targetSavingRatio,
+              ),
+            );
+            if (toggle.targetSavingRatio < 0.05) {
+              toggle.targetSavingRatio = 0;
+            }
+          }
+        }
         break;
       }
       default: {

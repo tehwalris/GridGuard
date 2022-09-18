@@ -8,9 +8,14 @@ const useStyles = createStyles((theme, _params, getRef) => ({
 interface Props {
   device: DeviceClassToggle;
   onTargetSavingsRatioChange: (targetSavingsRatio: number) => void;
+  autoAdjust: boolean;
 }
 
-function AdminDevice({ device, onTargetSavingsRatioChange }: Props) {
+function AdminDevice({
+  device,
+  onTargetSavingsRatioChange,
+  autoAdjust,
+}: Props) {
   const { classes } = useStyles();
   const niceDeviceKey =
     device.key.charAt(0).toUpperCase() + device.key.slice(1);
@@ -34,6 +39,7 @@ function AdminDevice({ device, onTargetSavingsRatioChange }: Props) {
             ? "All devices disabled"
             : `${Math.round(v * 100)}% of devices disabled`
         }
+        disabled={autoAdjust}
       />
     </Stack>
   );

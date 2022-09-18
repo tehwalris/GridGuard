@@ -22,24 +22,27 @@ function Event({ runAction, state }: Props) {
           height={450}
         />
         <Group>
-          <Button
-            onClick={() =>
-              runAction(() => {
-                return { type: ActionType.StartEvent };
-              })
-            }
-          >
-            Start Event
-          </Button>
-          <Button
-            onClick={() =>
-              runAction(() => {
-                return { type: ActionType.EndEvent };
-              })
-            }
-          >
-            End Event
-          </Button>
+          {state.eventOngoing ? (
+            <Button
+              onClick={() =>
+                runAction(() => {
+                  return { type: ActionType.EndEvent };
+                })
+              }
+            >
+              End Event
+            </Button>
+          ) : (
+            <Button
+              onClick={() =>
+                runAction(() => {
+                  return { type: ActionType.StartEvent };
+                })
+              }
+            >
+              Start Event
+            </Button>
+          )}
         </Group>
       </Stack>
     </Center>

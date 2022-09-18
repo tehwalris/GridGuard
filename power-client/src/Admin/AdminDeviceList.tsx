@@ -1,5 +1,14 @@
-import { Button, createStyles, Group, Stack, Text } from "@mantine/core";
+import {
+  Button,
+  createStyles,
+  Divider,
+  Group,
+  Stack,
+  Switch,
+  Text,
+} from "@mantine/core";
 import { ActionType, DeviceClassToggle } from "power-shared";
+import { useEffect } from "react";
 import { RunAction } from "../useUnilog";
 import AdminCard from "./AdminCard";
 import AdminDevice from "./AdminDevice";
@@ -23,7 +32,15 @@ interface Props {
   toggles: DeviceClassToggle[];
   runAction: RunAction;
   draftTargetSavingRatios: { [key: string]: number | undefined };
-  setDraftTargetSavingRatios: (smth: any) => void;
+  setDraftTargetSavingRatios: (
+    updateTargetSavingRatios:
+      | { [key: string]: number | undefined }
+      | ((oldTargetSavingRatios: { [key: string]: number | undefined }) => {
+          [key: string]: number | undefined;
+        }),
+  ) => void;
+  autoAdjust: boolean;
+  setAutoAdjust: (v: boolean) => void;
 }
 
 function AdminDeviceList({
@@ -31,6 +48,8 @@ function AdminDeviceList({
   runAction,
   draftTargetSavingRatios,
   setDraftTargetSavingRatios,
+  autoAdjust,
+  setAutoAdjust,
 }: Props) {
   const { classes } = useStyles();
 
@@ -56,28 +75,45 @@ function AdminDeviceList({
       draftTargetSavingRatios[toggle.key] !== toggle.targetSavingRatio,
   );
 
+  useEffect(() => {
+    setDraftTargetSavingRatios({});
+  }, [autoAdjust, setDraftTargetSavingRatios]);
+
   return (
     <AdminCard>
       <Stack p={0} className={classes.container}>
         <Text className={classes.title} size={26} pl={12}>
           LIMITS
         </Text>
+        <Group position="apart">
+          <Text>Auto-adjust limits if necessary</Text>
+          <Switch
+            checked={autoAdjust}
+            onChange={(ev) => setAutoAdjust(ev.currentTarget.checked)}
+          />
+        </Group>
+        <Divider />
         {toggles.map((toggle) => (
           <div className={classes.addSeparator}>
             <AdminDevice
               key={toggle.key}
-              device={{
-                ...toggle,
-                targetSavingRatio:
-                  draftTargetSavingRatios[toggle.key] ??
-                  toggle.targetSavingRatio,
-              }}
+              device={
+                autoAdjust
+                  ? toggle
+                  : {
+                      ...toggle,
+                      targetSavingRatio:
+                        draftTargetSavingRatios[toggle.key] ??
+                        toggle.targetSavingRatio,
+                    }
+              }
               onTargetSavingsRatioChange={(v) =>
-                setDraftTargetSavingRatios((old: any) => ({
+                setDraftTargetSavingRatios((old) => ({
                   ...old,
                   [toggle.key]: v,
                 }))
               }
+              autoAdjust={autoAdjust}
             />
           </div>
         ))}

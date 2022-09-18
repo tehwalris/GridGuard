@@ -3,6 +3,7 @@ export interface State {
   devices: Device[];
   deviceIndicesById: { [id: string]: number | undefined };
   meanProduction: number;
+  autoAdjust: boolean;
   toggles: DeviceClassToggle[];
   simulation: SimulationState;
   simulationHistory: SimulationState[];
