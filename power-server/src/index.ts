@@ -35,6 +35,9 @@ app.use(cors());
 const simulatedDeviceCount = 100000;
 const shownDeviceCount = 500;
 
+const microwaveIp = process.env["MICROWAVE_IP"] || "192.168.88.192";
+const microwavePort = parseInt(process.env["MICROWAVE_PORT"] || "80");
+
 class Lobby {
   private logLength: number = 0;
   private state: State = makeInitialState();
@@ -42,7 +45,10 @@ class Lobby {
   private clients = new Set<WebSocket>();
   private tickHandle: NodeJS.Timer | undefined;
   private deviceServer = new DeviceServer();
-  private microwaveBridge = new PhysicalDeviceBridge("192.168.88.192", 80);
+  private microwaveBridge = new PhysicalDeviceBridge(
+    microwaveIp,
+    microwavePort,
+  );
 
   private pushToLog(action: Action, undoKey: string | undefined): LogEntry {
     const nextState = reducer(this.state, action); // test if the reducer throws when the action is applied
