@@ -63,6 +63,7 @@ export class PhysicalDeviceBridge {
         this.lastSentAt = Date.now();
       }
       if (firstByteReceived === "t".charCodeAt(0)) {
+        console.log("button pressed");
         this.onButtonPressed?.();
       }
       setImmediate(this.startSendIfNeeded.bind(this));

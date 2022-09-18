@@ -217,6 +217,8 @@ class SometimesOnDeviceClient extends DeviceClient {
     private typicalPowerConsumption: number,
     private typicalOnTime: number,
     private typicalOffTime: number,
+    private typicalResponseTime: number,
+    private autoOnOff: boolean,
     private onSetPowered: (powered: boolean) => void,
   ) {
     super();
@@ -228,6 +230,16 @@ class SometimesOnDeviceClient extends DeviceClient {
       deviceId: this.deviceId,
       deviceClassKey: this.deviceClassKey,
     });
+
+    if (!this.autoOnOff) {
+      this.wantsToBePowered = false;
+      this.autoSetPowered();
+      while (!this.isStopped()) {
+        await sleep(5000);
+      }
+      return;
+    }
+
     const initiallyPowered =
       Math.random() <
       this.typicalOnTime / (this.typicalOnTime + this.typicalOffTime);
@@ -257,7 +269,7 @@ class SometimesOnDeviceClient extends DeviceClient {
 
   async onMessage(msg: PreferenceDeviceServerMessage): Promise<void> {
     this.latestAllowPowered = msg.allowPowered;
-    await sleep(Math.max(0, randomNormal() + 1) * 8000);
+    await sleep(Math.max(0, randomNormal() + 1) * this.typicalResponseTime);
     this.autoSetPowered();
   }
 
@@ -327,6 +339,8 @@ export function createVirtualDevices(
       targetPower / deviceCount / dutyCycle,
       settings.typicalOnTime,
       settings.typicalOffTime,
+      i === realMicrowaveIndex ? 500 : 8000,
+      i !== realMicrowaveIndex,
       (powered) => {
         if (i === realMicrowaveIndex) {
           // TODO this merges events from multiple microwaves together
