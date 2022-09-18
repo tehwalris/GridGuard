@@ -38,9 +38,9 @@ function AdminNav() {
       <div className={classes.addSeparator}>
         <AdminNavElement to="" label="DASHBOARD" active={true} />
       </div>
-      <div className={classes.addSeparator}>
+      {/*<div className={classes.addSeparator}>
         <AdminNavElement to="" label="SMTH" active={false} />
-      </div>
+  </div>*/}
     </Stack>
   );
 }
