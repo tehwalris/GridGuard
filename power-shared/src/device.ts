@@ -210,6 +210,7 @@ class LegacyDeviceClient extends DeviceClient {
 class SometimesOnDeviceClient extends DeviceClient {
   private latestAllowPowered = true;
   private wantsToBePowered = false;
+  private latestButtonTimeout: NodeJS.Timeout | undefined;
 
   constructor(
     private deviceId: string,
@@ -293,8 +294,20 @@ class SometimesOnDeviceClient extends DeviceClient {
   }
 
   onButtonPressed(): void {
-    this.wantsToBePowered = !this.wantsToBePowered;
-    this.autoSetPowered();
+    clearTimeout(this.latestButtonTimeout);
+    this.latestButtonTimeout = undefined;
+
+    if (this.wantsToBePowered) {
+      this.wantsToBePowered = false;
+      this.autoSetPowered();
+    } else {
+      this.wantsToBePowered = true;
+      this.autoSetPowered();
+      this.latestButtonTimeout = setTimeout(() => {
+        this.wantsToBePowered = false;
+        this.autoSetPowered();
+      }, this.typicalOnTime);
+    }
   }
 }
 
@@ -308,7 +321,7 @@ export function createVirtualDevices(
       | undefined;
   } = {
     fridge: { typicalOnTime: 10000, typicalOffTime: 40000 },
-    microwave: { typicalOnTime: 30000, typicalOffTime: 400000 },
+    microwave: { typicalOnTime: 45000, typicalOffTime: 400000 },
     oven: { typicalOnTime: 100000, typicalOffTime: 700000 },
     light: { typicalOnTime: 30000, typicalOffTime: 30000 },
     heater: { typicalOnTime: 800000, typicalOffTime: 600000 },
