@@ -89,17 +89,24 @@ class Lobby {
     this.stop();
     this.tickHandle = setInterval(this.onTick, tickMillis);
     this.deviceServer = new DeviceServer();
-    for (const deviceClient of createVirtualDevices(
+    const { deviceClients, realMicrowaveIndex } = createVirtualDevices(
       simulatedDeviceCount,
       (powered) => this.microwaveBridge.setPowered(powered),
-    )) {
+    );
+    for (const deviceClient of deviceClients) {
       this.deviceServer.addClient(deviceClient);
     }
+    this.microwaveBridge.start(() => {
+      if (realMicrowaveIndex !== undefined) {
+        deviceClients[realMicrowaveIndex].onButtonPressed();
+      }
+    });
   }
 
   stop() {
     clearInterval(this.tickHandle);
     this.deviceServer.stop();
+    this.microwaveBridge.stop();
   }
 
   shouldBeDeleted(): boolean {

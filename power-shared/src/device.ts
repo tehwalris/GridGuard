@@ -165,6 +165,8 @@ abstract class DeviceClient {
   protected isStopped(): boolean {
     return this.lifecycleState === DeviceClientLifecycle.Stopped;
   }
+
+  onButtonPressed(): void {}
 }
 
 class LegacyDeviceClient extends DeviceClient {
@@ -277,12 +279,17 @@ class SometimesOnDeviceClient extends DeviceClient {
   private noisyTime(time: number): number {
     return Math.max(0, randomNormal() * 0.5 + 1) * time;
   }
+
+  onButtonPressed(): void {
+    this.wantsToBePowered = !this.wantsToBePowered;
+    this.autoSetPowered();
+  }
 }
 
 export function createVirtualDevices(
   deviceCount: number,
   onMicrowaveChange: (powered: boolean) => void,
-): DeviceClient[] {
+): { deviceClients: DeviceClient[]; realMicrowaveIndex: number | undefined } {
   const settingsByDeviceClass: {
     [key: string]:
       | { typicalOnTime: number; typicalOffTime: number }
@@ -295,13 +302,18 @@ export function createVirtualDevices(
     heater: { typicalOnTime: 800000, typicalOffTime: 600000 },
   };
 
+  let realMicrowaveIndex: number | undefined;
+
   // TODO HACK need to scale this down to realistic values and scale up somewhere else
   const targetPower = gridMeanPower * (1 - nonSmartRatio);
-  return _.times(deviceCount, (i) => {
+  const deviceClients = _.times(deviceCount, (i) => {
     const deviceClass =
       allDeviceClassKeysSorted[
         Math.floor(Math.random() * allDeviceClassKeysSorted.length)
       ];
+    if (deviceClass === "microwave" && realMicrowaveIndex === undefined) {
+      realMicrowaveIndex = i;
+    }
     const settings = settingsByDeviceClass[deviceClass] ?? {
       typicalOnTime: 10000,
       typicalOffTime: 40000,
@@ -316,11 +328,13 @@ export function createVirtualDevices(
       settings.typicalOnTime,
       settings.typicalOffTime,
       (powered) => {
-        if (deviceClass === "microwave" && i < 100) {
+        if (i === realMicrowaveIndex) {
           // TODO this merges events from multiple microwaves together
           onMicrowaveChange(powered);
         }
       },
     );
   });
+
+  return { deviceClients, realMicrowaveIndex };
 }
