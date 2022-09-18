@@ -74,7 +74,7 @@ function UserContent({ state, userId }: Props) {
                         height={20}
                         src={
                           "/" +
-                          (device.powerConsumption > 0 ? "sun" : "mond") +
+                          (device.powerConsumption > 0 ? "Sun" : "Mond") +
                           ".svg"
                         }
                         alt=""
